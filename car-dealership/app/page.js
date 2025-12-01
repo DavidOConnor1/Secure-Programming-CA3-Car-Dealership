@@ -74,8 +74,41 @@ export default function Home() {
 
             
           <section className="py-20 bg-white dark:bg-black"> 
+              <div className="container mx-auto px-6">
+                <div className="text-center mb-16">
+                  <h2 className="text-4xl font-bold text-black dark:text-white mb-4"> Our Mission</h2>
+                  <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    We love and enjoy cars as much as you do and want to bring a simple buying experience that leaves you satisfied!
+                  </p>
+                </div>
 
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="text-center p-8 bg-zinc-50 dark:bg-gray-900 rounded-xl">
+                    <div className="bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Target className="text-blue-600 dark:text-blue-400" size={32} />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-4 text-black dark:text-white">
+                      Customer Focused
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      Your satisfaction is our priority. We listen, we understand, and we deliver exactly what you desire from your next vehicle.
+                    </p>
+                  </div>
+
+                  <div className="text-center p-8 bg-zinc-50 dark:bg-gray-900 rounded-xl">
+                    <div className="bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="text-blue-600 dark:text-blue-400" size={32} />
+                    </div>
+                    <h3 className="text-2xl font-semibold mb-4 text-black dark:text-white">Quality Assurance</h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      All of our vehicles are inspected and maintained to the highest degree that it provides a safe and reliable drive
+                    </p>
+                  </div>
+                </div>
+              </div>
           </section>
+
+          
 
         
     );
