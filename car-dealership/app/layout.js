@@ -4,7 +4,7 @@ import "./globals.css";
 
 
 export const metadata = {
-  title: "CarGuy Dealership",
+  title: "CarGuy Mechanics Dealership",
   description: "Car Enthusiasts Dealership, guarntee you with great prices and selection",
 };
 

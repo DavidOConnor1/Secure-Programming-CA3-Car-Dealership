@@ -108,7 +108,48 @@ export default function Home() {
               </div>
           </section>
 
-          
+          <section className="py-20 bg-zinc-50 dark:bg-gray-900"> 
+            <div className="container mx-auto px-6"> 
+              <div className="text-center mb-16">
+                <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
+                 Why Choose CarGuy Mechanics Dealership
+                </h2>
+                <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                  Experience a difference with company who cares
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-16">
+                {whyUs.map((item, index) => (
+                  <div key={index} className="bg-white dark:bg-black p-8 rounded-xl shadow-lg">
+                  <div className="flex items-start space-x-4"> 
+                    <div className="shrink-0">
+                      {item.icon}
+                      </div>
+                      <div>
+                      <h3 className="text-xl font-semibold mb-2 text-black dark:text-white">
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {item.description}
+                      </p>
+
+                      </div>
+                  </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+
+          <section className="py-20 bg-white dark:bg-black">
+                <div className="container mx-auto px-6">
+                  <div className="text-center mb-16">
+                    
+                  </div>
+                </div>
+          </section>
 
         
     );
