@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {car, Shield, Target, Award, Clock, Users, CheckCircle, Phone, Mail, MapPin, Icon} from 'lucide-react';
+import {car, Shield, Target, Award, Clock, Users, CheckCircle, Phone, Mail, MapPin, Icon, Car} from 'lucide-react';
 
 export default function Home() {
   
@@ -146,12 +146,47 @@ export default function Home() {
           <section className="py-20 bg-white dark:bg-black">
                 <div className="container mx-auto px-6">
                   <div className="text-center mb-16">
-                    
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full mb-6">
+                      <Car className="text-blue-600 dark:text-blue-400" size={32} />
+                    </div>
+                    <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
+                      Featured Vehicles
+                    </h2>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                      Explore our current Japanese selection of Cars
+                    </p>
+                  </div>
+                  <div className="grid md:grid-cols-3 gap-8">
+                    {featuredVehicles.map((vehicle, index) => (
+                      <div key={index} className="bg-zinc-50 dark:bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                        <div className="h-64 overflow-hidden">
+                          <img src={vehicle.image} alt={vehicle.name} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                          </div>
+                          <div className="p-6">
+                            <h3 className="text-2xl font-bold mb-2 text-black dark:text-white">{vehicle.name}</h3>
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {vehicle.features.map((feature, idx) => (
+                                <span key={idx} className="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">
+                                  {feature}
+                                </span>
+                              ))}
+                              </div>
+                              <div className="flex items-center justify-between"> 
+                                <span className="text-3xl font-bold text-black dark:text-white">
+                                  {vehicle.price}
+                                </span>
+                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold">
+                                  Add to Cart
+                                </button>
+                              </div>
+                            </div>
+                        </div>
+                    ))}
                   </div>
                 </div>
           </section>
 
-        
+     </>   
     );
 
   
