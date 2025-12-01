@@ -1,5 +1,5 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import './globals.css';
+import { Car, Phone, Mail, MapPin } from 'lucide-react';
 
 
 
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
   );
 }
 
-function Navigation {
+function Navigation() {
   return (
     <nav className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-sm border-b">
       <div className="flex items-center justify-between">
@@ -42,7 +42,7 @@ function Navigation {
   );
 }
 
-function Footer {
+function Footer() {
   return (
     <footer className="bg-black text-white py-12">
       <div className="container mx-auto px-6">
