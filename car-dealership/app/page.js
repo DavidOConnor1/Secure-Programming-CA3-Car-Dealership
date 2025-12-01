@@ -45,16 +45,37 @@ export default function Home() {
 
     return (
       {/** Hero Section */}
-
-      <section id="home" className="relative h-[600px] bg-gradient-to-r from-gray-900 to-blue-900 dark:from-black dark:to-gray-900">
-        <div className="absolute inset-0 bg-cover bg-center opacity-20"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")'
-        }} />
-
+      <>
+       <section id="home" className="relative bg-linear-to-r from-gray-900 to-blue-900 dark:from-black dark:to-gray-900">
         <div className="relative container mx-auto px-6 h-full flex items-center">
+             <div className="max-w-2xl text-white">
+               <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                 Your Trip Starts Here
+               </h1>
+               <p className="text-xl mb-8 text-gray-200 dark:text-gray-300">
+                 Premium Reliable Vehicles, Car Enthusiasts who understand their product and notable service.
+                 Do not be shy, pop in and drive your dream car home today.
+               </p>
+
+               <div className="flex flex-col sm:flex-row gap-4">
+                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition duration-300">
+                   Browse Inventory
+                 </button>
+
+                 <button className="bg-transparent border-2 border-white hover:bg-white hover:text-blue-900 px-8 rounded-lg font-semibold text-lg transition duration-300">
+                   Learn More
+                 </button>
+               </div>
+
+             </div>
+           </div>
           
-          </div> 
+          </section>
+
+            
+          <section className="py-20 bg-white dark:bg-black"> 
+
+          </section>
 
         
     );
