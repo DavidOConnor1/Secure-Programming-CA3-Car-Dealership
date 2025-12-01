@@ -44,7 +44,19 @@ export default function Home() {
     ]
 
     return (
-      
+      {/** Hero Section */}
+
+      <section id="home" className="relative h-[600px] bg-gradient-to-r from-gray-900 to-blue-900 dark:from-black dark:to-gray-900">
+        <div className="absolute inset-0 bg-cover bg-center opacity-20"
+        style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")'
+        }} />
+
+        <div className="relative container mx-auto px-6 h-full flex items-center">
+          
+          </div> 
+
+        
     );
 
   
