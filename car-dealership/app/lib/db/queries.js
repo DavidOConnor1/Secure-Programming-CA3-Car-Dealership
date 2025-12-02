@@ -114,6 +114,43 @@ export async function getOrCreateCart(sessionId) {
         cart = await db.get('SELECT * FROM carts WHERE id = ?', [cartId]);
 
     }
-    return cart;
-    
+    return cart; 
 }
+
+export async function addToCart(sessionId, vehicleId, quantity = 1) {
+    const db = await getDatabase();
+
+    const cart = await getOrCreateCart(sessionId);
+
+    //check if the vehicle exists and is available
+    const vehicle = await db.get(
+        `SELECT id FROM vehicles WHERE id = ? AND is_sold = FALSE`,
+        [vehicleId]
+    );
+
+    if(!vehicle){
+        throw new Error('Vehicle not found or sold');
+    }
+
+    //checking if the item is in cart
+    const existingItem = await db.get(
+        'SELECT * FROM cart_items WHERE cart_id = ? AND vehicle_id =?',
+        [cart.id, vehicleId]
+    );
+
+    if(existingItem){
+        //Update quantity
+        await db.run(
+            'UPDATE cart_items SET quantity = quantity + ? WHERE id = ?',
+            [quantity, existingItem.id]
+        );
+    } else {
+        //add new item
+        await db.run(
+        'INSERT INTO cart_items (cart_id, vehicle_id, quantity) VALUES (?, ?, ?)',
+        [cart.id, vehicleId, quantity]
+        );
+    }
+    return await getCartWithItems(sessionId);
+}
+
