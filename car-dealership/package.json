@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.555.0",
     "next": "16.0.6",
     "react": "19.2.0",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/lodash": "^4.17.21",
     "babel-plugin-react-compiler": "1.0.0",
     "tailwindcss": "^4"
   }

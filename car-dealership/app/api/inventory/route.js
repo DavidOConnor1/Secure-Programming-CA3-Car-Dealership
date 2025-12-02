@@ -15,12 +15,22 @@ export async function GET(request) {
 
         const vehicles = await getAllVehicles(filters);
 
-        return Response.json(vehicles);
+        return Response.json({
+            success: true,
+            data: vehicles,
+            count: vehicles.length,
+            filters
+        });
+
+
     } catch (error) {
         console.error('Error fetching inventory: ',error);
-        return Response.json(
-            {error: 'Failed to fetch inventory'},
-            { status:500}
-        );
+        return Response.json({
+            success: false,
+            error: 'Failed to fetch inventory',
+            message: error.message
+        },
+           {  status:500}
+    );
     }
 }
