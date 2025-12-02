@@ -154,3 +154,98 @@ export async function addToCart(sessionId, vehicleId, quantity = 1) {
     return await getCartWithItems(sessionId);
 }
 
+
+export async function getCartWithItems(sessionId) {
+    const db = await getDatabase();
+
+    const cart = await db.get(
+        'SELECT * FROM carts WHERE session_id = ?',
+        [sessionId]
+    );
+
+    if(!cart) return null;
+
+    const items = await db.all(`
+    SELECT ci.*, 
+           v.name, v.year, v.price, v.image_url, v.color, v.transmission,
+           GROUP_CONCAT(f.name) as features
+    FROM cart_items ci
+    JOIN vehicles v ON ci.vehicle_id = v.id
+    LEFT JOIN vehicle_features vf ON v.id = vf.vehicle_id
+    LEFT JOIN features f ON vf.feature_id = f.id
+    WHERE ci.cart_id = ?
+    GROUP BY ci.id
+  `, [cart.id]);
+  
+  const processedItems = items.map(item => ({
+    ...item,
+    features: item.features ? item.features.split(',') : [],
+    price: parseFloat(item.price)
+  }));
+  
+  const cartTotal = processedItems.reduce(
+    (total, item) => total + (item.price * item.quantity),
+    0
+  );
+  
+  const cartCount = processedItems.reduce(
+    (count, item) => count + item.quantity,
+    0
+  );
+  
+  return {
+    ...cart,
+    items: processedItems,
+    total: cartTotal,
+    count: cartCount
+  };
+}
+
+export async function updateCartItem(sessionId, vehicleId, quantity)
+{
+    const db = await getDatabase();
+
+    const cart = await db.get(
+        'SELECT * FROM carts WHERE session_id = ?',
+        [sessionId]
+    );
+
+    if(!cart) throw new Error('cart not found');
+
+    if(quantity < 1){
+        //remove item
+        await db.run(
+            'DELETE FROM cart_items WHERE cart_id = ? AND vehicle_id = ?',
+            [cart.id, vehicleId]
+        );
+    } else {
+        //updaating the quantity
+        await db.run(
+            'UPDATE cart_items SET quantity = ? WHERE cart_id = ? and vehicle_id = ?',
+            [quantity, cart.id, vehicleId]
+        );
+    }
+     return await getCartWithItems(sessionId);
+}
+
+export async function removeFromCart(sessionId, vehicleId){
+    return updateCartItem(sessionId, vehicleId, 0);
+}
+
+export async function clearCart(sessionId){
+    const db = await getDatabase();
+
+    const cart = await db.get(
+        'SELECT * FROM carts WHERE session_id = ?',
+        [sessionId]
+    );
+
+    if(!cart) return;
+
+    await db.run('DELETE FROM cart_items WHERE cart_id = ?', 
+        [cart.id]
+    );
+
+    return {success: true};
+}   
+
