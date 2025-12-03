@@ -192,5 +192,76 @@ export default function InventoryPage() {
                 </div>
             </div>
         </div>
+
+        <div className='container mx-auto px-4 py-8'>
+            {/* stats bar*/}
+
+            <div className='bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 mb-8'>
+                <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
+                    <div className='text-center md:text-left'>
+                        <div className='text-3xl font-bold text-blue-600 dark:text-blue-400'>
+                            {stats.total}
+                        </div>
+                        <div className='text-gray-600 dark:text-gray-400'>
+                            vehicles available
+                        </div>
+                    </div>
+                    <div className='text-center md:text-left'>
+                        <div className='text-3xl font-bold text-green-600 dark:text-green-400'>
+                            {formatCurrency(stats.lowestPrice)}
+                        </div>
+                        <div className='text-gray-600 dark:text-gray-400'>
+                            Starting from
+                        </div>
+                    </div>
+
+                        <div className='text-center md:text-left'>
+                            <div className='text-3xl font-bold text-purple-600 dark:text-purple-400'>
+                                {stats.availableYears.length}
+                            </div>
+                            <div className='text-gray-600 dark:text-gray-400'>
+                                Model Years
+                            </div>
+                        </div>
+                        <div className='text-center md:text-left'>
+                            <div className='text-3xl font-bold text-orange-600 dark:text-orange-400'>
+                                {stats.availableColors.length}
+                            </div>
+                            <div className='text-gray-600 dark:text-gray-400'>
+                                Color Options
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className='flex flex-col lg:flex-row gap-8'>
+                {/*filters sidebar*/}
+                <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+                        <div className='bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 sticky top-24'>
+                            <div className='flex items-center justify-between mb-6'>
+                                <div className='flex items-center gap-2'>
+                                    <SlidersHorizontal className='text-blue-600' size={24} />
+                                    <h2 className='text-2xl font-bold text-black dark:text-white'>filters</h2>
+                                </div>
+                                <div className='flex items-center gap-2'>
+                                    {activeFilterCount > 0 && (
+                                        <span className='bg-blue-600 text-white text-sm px-2 py-1 rounded-full'>
+                                            {activeFilterCount}
+                                        </span>
+                                    )}
+                                    <button
+                                    onClick={clearFilters}
+                                    className='text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'>
+                                        Clear all
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
     </div>
   )
