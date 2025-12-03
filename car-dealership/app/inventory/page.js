@@ -294,9 +294,30 @@ export default function InventoryPage() {
                                     Price Range
                                 </label>
                                 <div className='grid grid-cols-2 gap-3'>
-                                    
+                                    <div>
+                                        <input
+                                        type='number'
+                                        placeholder='Min $'
+                                        value={activeFilters.minPrice}
+                                        onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                                        className='w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white' />
+                                    </div>
+                                    <div>
+                                          <input
+                                        type='number'
+                                        placeholder='Max $'
+                                        value={activeFilters.maxPrice}
+                                        onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                                        className='w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white' />
+                                    </div>
+                                </div>
+                                <div className='mt-2 text-xs text-gray-500'>
+                                    Range : {formatCurrency(stats.lowestPrice)} - {formatCurrency(stats.highestPrice)}
                                 </div>
                             </div>
+
+                            {/*Year*/}
+                            
                         </div>
                 </div>
             </div>
