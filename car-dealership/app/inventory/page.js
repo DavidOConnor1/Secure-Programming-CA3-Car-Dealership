@@ -255,6 +255,46 @@ export default function InventoryPage() {
                                     className='text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'>
                                         Clear all
                                     </button>
+                                    <button
+                                        onClick={() => setShowFilters(false)}
+                                        className='lg:hidden text-gray-500 hover:text-gray-700' >
+                                            <X size={20} />
+                                        </button>
+                                </div>
+                            </div>
+
+                            {/*SORT BY*/}
+
+                            <div className='mb-6'>
+                                <label className='block text-sm font-semibold mb-3 text-black dark:text-white'>
+                                    Sort By
+                                </label>
+
+                                <div className='space-y-2'>
+                                    {sortOptions.map((option) => (
+                                        <button
+                                            key={option.value}
+                                            onClick={() => handleFilterChange('sortBy', option.value)}
+                                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                                                activeFilters.sortBy === option.value
+                                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300' 
+                                                : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+                                            }`}
+                                            >
+                                                {option.icon}
+                                            </button>
+                                    ))}
+                                    </div>    
+                            </div>
+
+                            {/* Price Range */}
+
+                            <div className='mb-6'>
+                                <label className='block text-sm font-semibold mb-3 text-black dark:text-white'>
+                                    Price Range
+                                </label>
+                                <div className='grid grid-cols-2 gap-3'>
+                                    
                                 </div>
                             </div>
                         </div>
