@@ -178,23 +178,34 @@ async function seedDatabase(db) {
       engine: "2.4L Boxer-4",
       description: "Affordable Sports Car",
     },
+    {
+      name: "Toyota AE86 Trueno",
+      year: 2026,
+      price: 40000,
+      image_url: "https://cdn.motor1.com/images/mgl/13P3q/s1/modern-day-toyota-ae86-rendering-front.webp",
+      mileage: 0,
+      color: "Black & White", // ADDED THIS MISSING FIELD
+      transmission: "5-Speed Manual",
+      horsepower: 130,
+      fuel_type: "Electric",
+      engine: "4A-GE",
+      description: "Iconic Initial D drift legend. Classic Japanese sports coupe."
+    },
   ];
 
   for (const vehicle of vehicles) {
     const result = await db.run(
-      `
-        INSERT INTO vehicles (
+      `INSERT INTO vehicles (
         name, year, price, image_url, mileage, color, transmission,
         fuel_type, horsepower, engine, description
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         vehicle.name,
         vehicle.year,
         vehicle.price,
         vehicle.image_url,
         vehicle.mileage,
-        vehicle.color,
+        vehicle.color, // This was missing for AE86
         vehicle.transmission,
         vehicle.fuel_type,
         vehicle.horsepower,
@@ -206,15 +217,12 @@ async function seedDatabase(db) {
     //adding features to vehicles
     const vehicleId = result.lastID;
     const featureNames = vehicle.name.includes("Type R")
-      ? [
-          "VTEC TURBO",
-          "MANUAL TRANSMISSION",
-          "TURBO CHARGED",
-          "NAVIGATION SYSTEM",
-        ]
+      ? ["VTEC Turbo", "Manual Transmission", "Turbocharged", "Navigation System"]
       : vehicle.name.includes("MX-5")
       ? ["Convertible", "Manual Transmission", "Keyless Entry", "Apple CarPlay"]
-      : ["RWD", "Manual Transmission", "Keyless Entry", "Backup Camera"];
+      : vehicle.name.includes("GR86")
+      ? ["RWD", "Manual Transmission", "Keyless Entry", "Backup Camera"]
+      : ["Classic", "Manual Transmission", "RWD", "Lightweight"]; // Features for AE86
 
     for (const featureName of featureNames) {
       const feature = await db.get(

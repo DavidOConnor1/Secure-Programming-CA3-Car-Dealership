@@ -1,6 +1,6 @@
 'use client';
 
-import { Car, ShoppingCart } from 'lucide-react';
+import { Car, ShoppingCart, Home } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
 
@@ -11,31 +11,23 @@ export default function Navigation() {
     <nav className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-sm border-b">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          {/*  Logo */}
+          <Link href="/" className="flex items-center gap-2">
             <Car className="text-blue-600" size={32} />
-            <Link href="/" className="text-2xl font-bold text-black dark:text-white">
+            <span className="text-2xl font-bold text-black dark:text-white">
               CarGuy Mechanics
-            </Link>
-          </div>
+            </span>
+          </Link>
           
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/" className="text-black dark:text-white hover:text-blue-600 transition">
-              Home
+          {/*  Navigation icons */}
+          <div className="flex items-center gap-6">
+            {/* Home link (optional) */}
+            <Link href="/" className="text-black dark:text-white hover:text-blue-600 transition hidden md:flex items-center gap-2">
+              <Home size={20} />
+              <span>Home</span>
             </Link>
-            <Link href="/inventory" className="text-black dark:text-white hover:text-blue-600 transition">
-              Inventory
-            </Link>
-            <Link href="/cart" className="relative text-black dark:text-white hover:text-blue-600 transition">
-              Cart
-              {cart.count > 0 && (
-                <span className="absolute -top-2 -right-4 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cart.count}
-                </span>
-              )}
-            </Link>
-          </div>
-          
-          <div className="flex items-center gap-4">
+            
+            {/* Cart with badge */}
             <Link href="/cart" className="relative">
               <ShoppingCart className="text-black dark:text-white" size={24} />
               {cart.count > 0 && (
@@ -44,6 +36,8 @@ export default function Navigation() {
                 </span>
               )}
             </Link>
+            
+            {/* Browse Cars button */}
             <Link 
               href="/inventory" 
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
