@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../context/cartContext";
 import {
   Car,
   Filter,

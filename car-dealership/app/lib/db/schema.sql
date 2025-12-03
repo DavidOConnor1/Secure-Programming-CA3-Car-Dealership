@@ -1,5 +1,4 @@
 -- Vehicles Table
-
 CREATE TABLE IF NOT EXISTS vehicles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -16,15 +15,14 @@ CREATE TABLE IF NOT EXISTS vehicles (
     is_sold BOOLEAN DEFAULT FALSE
 );
 
---Features table
+-- Features table
 CREATE TABLE IF NOT EXISTS features (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
 );
 
--- Vehocle features Junction TABLE
-
-CREATE TABLE IF NOT EXISTS vehicles_features (
+-- Vehicle features Junction TABLE 
+CREATE TABLE IF NOT EXISTS vehicle_features (
     vehicle_id INTEGER,
     feature_id INTEGER,
     PRIMARY KEY (vehicle_id, feature_id),
@@ -32,8 +30,7 @@ CREATE TABLE IF NOT EXISTS vehicles_features (
     FOREIGN KEY (feature_id) REFERENCES features(id) ON DELETE CASCADE
 );
 
-
---cart table
+-- Cart table
 CREATE TABLE IF NOT EXISTS carts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     session_id TEXT UNIQUE,
@@ -42,7 +39,7 @@ CREATE TABLE IF NOT EXISTS carts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---cart items 
+-- Cart items 
 CREATE TABLE IF NOT EXISTS cart_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cart_id INTEGER NOT NULL,
@@ -54,8 +51,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
     UNIQUE(cart_id, vehicle_id)
 );
 
---Customers Table
-
+-- Customers Table
 CREATE TABLE IF NOT EXISTS customers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -65,7 +61,7 @@ CREATE TABLE IF NOT EXISTS customers (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---Orders Table
+-- Orders Table
 CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     customer_id INTEGER,
@@ -76,12 +72,11 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
--- order item table
-
-CREATE TABLE IF NOT EXISTS order_items(
+-- Order item table 
+CREATE TABLE IF NOT EXISTS order_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     order_id INTEGER NOT NULL,
-    vehicle_id INTEGER NOT NULL
+    vehicle_id INTEGER NOT NULL,  
     quantity INTEGER NOT NULL,
     price_at_purchase DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,

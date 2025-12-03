@@ -5,7 +5,7 @@ import {
   updateCartItem,
   removeFromCart,
   clearCart
-} from '@/lib/db/queries';
+} from '../../lib/db/queries';
 
 export async function GET() {
   try {

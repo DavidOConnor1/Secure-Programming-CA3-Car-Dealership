@@ -1,72 +1,92 @@
 import { getDatabase } from "./init";
 
 export async function getAllVehicles(filters = {}) {
-    const db = await getDatabase();
-
+  const db = await getDatabase();
+  
+  try {
     let query = `
-    SELECT v.*,
-    GROUP_CONCAT(f.name) as features
-    FROM vehicles v
-    LEFT JOIN vehicles_features vf on v.id = vf.vehicle_id
-    LEFT JOIN features f on vf.feature_id = f.id
-    WHERE v.is_sold = FALSE
+      SELECT v.*, 
+             GROUP_CONCAT(f.name) as features
+      FROM vehicles v
+      LEFT JOIN vehicle_features vf ON v.id = vf.vehicle_id
+      LEFT JOIN features f ON vf.feature_id = f.id
+      WHERE v.is_sold = 0
     `;
-
+    
     const params = [];
     const conditions = [];
-
-    if(filters.minPrice)
-    {
-        conditions.push('v.price >= ?');
-        params.push(filters.minPrice);
+    
+    // Search filter
+    if (filters.search) {
+      conditions.push(`
+        (v.name LIKE ? OR 
+         v.description LIKE ? OR 
+         v.color LIKE ? OR 
+         v.engine LIKE ? OR
+         v.fuel_type LIKE ?)
+      `);
+      const searchTerm = `%${filters.search}%`;
+      params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
     }
-
-    if(filters.maxPrice){
-        conditions.push('v.price <= ?');
-        params.push(filters.maxPrice);
+    
+    // Price filters
+    if (filters.minPrice) {
+      conditions.push('v.price >= ?');
+      params.push(parseFloat(filters.minPrice));
     }
-
-    if(filters.year){
-        conditions.push('v.year = ?');
-        params.push(filters.year);
+    
+    if (filters.maxPrice) {
+      conditions.push('v.price <= ?');
+      params.push(parseFloat(filters.maxPrice));
     }
-
-    if(filters.transmission){
-        conditions.push('v.transmission LIKE ?');
-        params.push(`%${filters.transmission}%`);
+    
+    // Year filter
+    if (filters.year) {
+      conditions.push('v.year = ?');
+      params.push(parseInt(filters.year));
     }
-
-    if(filters.color){
-        conditions.push('v.color LIKE ?');
-        params.push(`%${filters.color}%`);
+    
+    // Transmission filter
+    if (filters.transmission) {
+      conditions.push('v.transmission LIKE ?');
+      params.push(`%${filters.transmission}%`);
     }
-
-    if(filters.search){
-        conditions.push(
-            `
-            (v.name LIKE ? OR
-            v.description LIKE ? OR
-            v.color LIKE ? OR
-            v.enginer LIKE ?)
-            `
-        );
-
-        const searchTerm = `%${filters.search}%`;
-        params.push(searchTerm, searchTerm, searchTerm, searchTerm);
+    
+    // Color filter
+    if (filters.color) {
+      conditions.push('v.color LIKE ?');
+      params.push(`%${filters.color}%`);
     }
-
-    if(conditions.length > 0){
-        query += 'GROUP BY v.id ORDER BY v.created_at DESC';
-
-        const vehicles = await db.all(query, params);
-
-        //Parse Features from String to array
-        return vehicles.map(vehicle => ({
-            ...vehicle,
-            features: vehicle.features ? vehicle.features.split(',') : [],
-            price: parseFloat(vehicle.price)
-        }));
+    
+    // Add conditions to query
+    if (conditions.length > 0) {
+      query += ' AND ' + conditions.join(' AND ');
     }
+    
+    query += ' GROUP BY v.id ORDER BY v.id DESC';
+    
+    console.log('SQL Query:', query);
+    console.log('SQL Params:', params);
+    
+    const vehicles = await db.all(query, params);
+    console.log('Found vehicles:', vehicles.length);
+    
+    // Parse features from string to array
+    const processedVehicles = vehicles.map(vehicle => ({
+      ...vehicle,
+      features: vehicle.features ? vehicle.features.split(',') : [],
+      price: parseFloat(vehicle.price)
+    }));
+    
+    return processedVehicles;
+    
+  } catch (error) {
+    console.error('Error in getAllVehicles:', error);
+    console.error('SQLite error details:', error.message);
+    
+    // Return empty array on error
+    return [];
+  }
 }
 
 export async function getVehicleById(id) {
