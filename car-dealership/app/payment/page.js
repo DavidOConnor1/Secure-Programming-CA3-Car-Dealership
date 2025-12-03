@@ -79,7 +79,24 @@ export default function PaymentPage(){
                 </form>
             </div>
 
-           
+            {/*Display how the cards are stored*/}
+           <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold">Stored Cards</h2>
+                <button
+                    onClick={() => {
+                        if(storedCards.length === 0){
+                            alert("No cards stored yet. submit a card first!");
+                        } else {
+                            alert(`Details are not stored securely \n\n${storedCards.length} cards are stored in plain text:\n\n${storedCards.map((card, i) =>
+                            `Card ${i+1}: ${card.number} | ${card.expiry} | CVV: ${card.expiry} | Name: ${card.name}`).join('\n')}`);
+                        }
+                    }}
+                    className="bg-red-600 text-white px-4 py-2 rounded font-bold hover:bg-red-700">
+                        Show Stored Cards
+                    </button>
+            </div>
+           </div>
         </div>
     )
 }
