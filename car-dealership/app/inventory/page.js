@@ -317,8 +317,161 @@ export default function InventoryPage() {
                             </div>
 
                             {/*Year*/}
-                            
+
+                        <div className='mb-6'>
+                            <label className='block text-sm font-semibold mb-3 text-black dark:text-white'>
+                                Year
+                            </label>
+                            <select
+                            value={activeFilters.year}
+                            onChange={(e) => handleFilterChange('year', e.target.value)}
+                            className='w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white' >
+                            <option value="">All Years</option>
+                            {stats.availableYears.map((year) => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
+                            </select>
                         </div>
+
+                        {/*Transmission*/}
+
+                        <div className='mb-6'>
+                            <label className='block text-sm font-semibold mb-3 text-black dark:text-white'>
+                                Transmission
+                            </label>
+                            <div className='space-y-2'>
+                                {['Manual', 'Automatic', 'CVT', 'Dual-Clutch'].map((type) => (
+                                    <button
+                                    key={type}
+                                    onClick={() => handleFilterChange('transmission', 
+                                        activeFilters.transmission === type ? '' : type
+                                    )}
+                                     className={`w-full px-4 py-2 rounded-lg text-left transition-colors ${
+                        activeFilters.transmission === type
+                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+                          : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+                      }`}
+                    >
+                      <Settings className="inline mr-2" size={16} />
+                      {type}
+                    </button>
+
+                                ))}
+                            </div>
+                        </div>
+
+                          {/* Colour */}
+              {stats.availableColors.length > 0 && (
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold mb-3 text-black dark:text-white">
+                    Color
+                  </label>
+                  <select
+                    value={activeFilters.color}
+                    onChange={(e) => handleFilterChange('color', e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white"
+                  >
+                    <option value="">All Colors</option>
+                    {stats.availableColors.map((color) => (
+                      <option key={color} value={color}>
+                        {color}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          </div>       
+
+          {/* Page Content*/}
+
+              <div className='flex-1'>
+                {/*results count*/}
+                <div className='mb-6'>
+                <h2 className='text-2xl font-bold text-black dark:text-white'>
+                available vehicles ({vehicles.length})
+              </h2>
+                        </div>
+
+                        {/*Loading States*/}
+                        {loading && (
+                            <div className='text-center py-12'>
+                                <div className='inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600'>
+                                    </div>
+                                    <p className='mt-4 text-gray-600 dark:text-gray-400'>Loading Vehicles...</p>
+                                </div>
+                        )}
+                        {/*Error State*/}
+                        {error && !loading && (
+                            <div className='text-center py-12'>
+                                <div className='text-red-600 dark:text-red-400 mb-4'>
+                                    Error Loading Inventory
+                                    </div>
+                                    <p className='text-gray-600 dark:text-gray-400'>{error}</p>
+                                </div>
+                        )}
+
+                        {/*Empty State*/}
+                        {!loading && !error && vehicles.length === 0 && (
+                            <div className='text-center py-16 bg-white dark:bg-gray-900 rounded-xl shadow-lg'>
+                                <h3 className='text-2xl font-bold text-gray-600 dark:text-gray-400 mb-2'>
+                                    No Vehicles Found
+                                </h3>
+                                <p className='text-gray-500 dark:text-gray-500'>
+                                    Try Adjusting your search or filters
+                                </p>
+                                </div>
+                        )}
+
+                        {/*Vehicle Grid*/}
+                        {!loading && !error && vehicles.length > 0 && (
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                                {vehicles.map((vehicle) => (
+                                    <div 
+                                    key={vehicle.id}
+                                    className='bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow'>
+                                        {/*Vehicle Image*/}
+                                        <div className='h-56 bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-4'>
+                                            <img 
+                                            src={vehicle.image_url}
+                                            alt={vehicle.name}
+                                            className='max-w-full max-h-full object-contain' />
+                                            </div>
+                                            {/*Vehicle Info*/}
+                                            <div className='p-6'>
+                                                <div className='flex justify-between items-start mb-4'>
+                                                    <div>
+                                                        <h3 className='text-xl font-bold text-black dark:text-white'>
+                                                            {vehicle.name}
+                                                        </h3>
+                                                        <div className='flex items-center gap-2 mt-1'>
+                                                            <span className='text-blue-600 dark:text-blue-400 font-semibold'>
+                                                                {vehicle.year}
+                                                            </span>
+                                                            <span className='text-gray-400'>.</span>
+                                                            <span className='text-gray-600 dark:text-gray-400'>
+                                                                {vehicle.mileage?.toLocaleString()} km
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='text-right'> 
+                                                            <div className='text-2xl font-bold text-black dark:text-white'>
+                                                                {formatCurrency(vehicle.price)}
+                                                                </div>
+                                                        </div>
+                                                    </div>
+
+                                                    
+                                                
+                                                </div>
+
+                                        </div>
+                                ))}
+                                
+                                </div>
+                        )}
                 </div>
             </div>
 
