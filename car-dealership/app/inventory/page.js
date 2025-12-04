@@ -343,6 +343,7 @@ export default function InventoryPage() {
                 placeholder="Search via model, feature or colour..."
                 value={searchQuery}
                 onChange={(e) => {
+                  const query = e.target.value;
                   setSearchQuery(query);
                   fetchSuggestions(query);
                   debouncedSearch(query);
