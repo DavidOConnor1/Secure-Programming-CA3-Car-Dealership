@@ -214,13 +214,11 @@ export default function Home() {
                         </span>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between"> 
-                      <span className="text-3xl font-bold text-black dark:text-white">
+                    <div className="flex items-center"> 
+                      <span className="text-3xl font-bold text-black dark:text-white ">
                         {vehicle.price}
                       </span>
-                      <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold">
-                        Add to Cart
-                      </button>
+                      
                     </div>
                   </div>
                 </div>
