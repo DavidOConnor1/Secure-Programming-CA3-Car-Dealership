@@ -357,26 +357,32 @@ export default function InventoryPage() {
 
               {/*drops down the suggestions */}
 
-              {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
-                  {suggestions.map((suggestion, index) => (
-                    <div
-                      key={index}
-                      onClick={() => {
-                        setSearchQuery(suggestion.replace(/<[^>]*>/g, "")); // Strip HTML
-                        fetchInventory({
-                          ...activeFilters,
-                          search: suggestion,
-                        });
-                        setShowSuggestions(false);
-                      }}
-                      className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
-                      // VULNERABLE: This would execute XSS
-                      dangerouslySetInnerHTML={{ __html: suggestion }}
-                    />
-                  ))}
-                </div>
-              )}
+             {showSuggestions && suggestions.length > 0 && (
+  <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+    {suggestions.map((suggestion, index) => {
+      // Extract clean text from the HTML suggestion
+      const cleanText = suggestion
+        .replace(/<[^>]*>/g, '') 
+        .replace(/&[^;]+;/g, '') 
+        .trim();
+      
+      return (
+        <div
+          key={index}
+          onClick={() => {
+            // Set the CLEAN text, not the HTML
+            setSearchQuery(cleanText);
+            fetchInventory({ ...activeFilters, search: cleanText });
+            setShowSuggestions(false);
+          }}
+          className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
+           This renders the HTML with potential XSS
+          dangerouslySetInnerHTML={{ __html: suggestion }}
+        />
+      );
+    })}
+  </div>
+)}
 
               {searchQuery && (
                 <button
