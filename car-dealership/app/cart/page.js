@@ -114,7 +114,7 @@ export default function CartPage() {
             </div>
 
             <button
-              onClick={() => window.location.href = '/payment'}
+              onClick={() => window.location.href = '/insecurepayment'}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mb-4"
             >
               Proceed to Checkout
