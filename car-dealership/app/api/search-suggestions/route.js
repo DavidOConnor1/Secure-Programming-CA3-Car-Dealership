@@ -1,3 +1,5 @@
+import { Search } from "lucide-react";
+
 export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q') || '';
@@ -17,13 +19,17 @@ export async function GET(request) {
         );
     }
 
-    //User Input in JSON response that is rendered
+    //was previously malicious code
+    //returns plain data, lets frontend to handle render safely
     return Response.json({
         success: true,
         query: query,
-        suggestions: suggestions,
-        //diguised analytics but contains raw html
-        analytics: `<script>window._searchTerm="${query.replace(/"/g, '\\"')}" </script>`,
-        timestamp: new Date().toISOString() + `<!-- Search: ${query} -->`
+        suggestions: suggestions.map(s => s.replace(/[<>]/g, '')), //santizes the suggestion
+        analytics: {
+            searchTerm: query,
+            timestamp: new Date().toISOString()
+        }
     });
+
+   
 }

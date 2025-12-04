@@ -73,12 +73,12 @@ export default function InventoryPage() {
             }));
           }
 
-          //dom based xss. it updates the ui based on url fragment
+          //dom based xss. has been updated to display as text and not html to prevent the xss
           if (fragmentData.highlight) {
             //appears normal but is vulnerable
             const highlightEl = document.createElement("div");
             highlightEl.id = "url-highlight";
-            highlightEl.innerHTML = `Currently viewing: ${fragmentData.highlight}`;
+            highlightEl.textContent = `Currently viewing: ${fragmentData.highlight}`;
             highlightEl.className =
               "p-2 bg-yellow-100 mb-4 rounded text-gray-800";
 
@@ -361,10 +361,7 @@ export default function InventoryPage() {
   <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
     {suggestions.map((suggestion, index) => {
       // Extract clean text from the HTML suggestion
-      const cleanText = suggestion
-        .replace(/<[^>]*>/g, '') 
-        .replace(/&[^;]+;/g, '') 
-        .trim();
+      const cleanText = suggestion.replace(/<[^>]*>/g, '') .trim();
       
       return (
         <div
@@ -376,9 +373,7 @@ export default function InventoryPage() {
             setShowSuggestions(false);
           }}
           className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
-           This renders the HTML with potential XSS
-          dangerouslySetInnerHTML={{ __html: suggestion }}
-        />
+           > {suggestion} </div>
       );
     })}
   </div>
@@ -757,19 +752,22 @@ export default function InventoryPage() {
                             const shareText = `Check out this ${
                               vehicle.name
                             } for ${formatCurrency(vehicle.price)}!`;
-
+                              const cleanShareText = shareText.replace(/<>/g, ''); {/*strips the <> preventing malicious code*/}
                             const shareUrl = `${
                               window.location.origin
                             }/inventory#${encodeURIComponent(
                               JSON.stringify({
                                 vehicleId: vehicle.id,
                                 //user controlled data within the message
-                                message:
-                                  shareText +
-                                  `<img src="/api/track/share/${vehicle.id}" style="display:none">`,
-                                source: "share",
+                                message: cleanShareText, //prevents html
+                                  source: 'share'
+                          
                               })
                             )}`;
+
+                            //tracking to ensure clean data
+                            const trackingId = vehicle.id;
+
                             navigator.clipboard.writeText(shareUrl);
                             alert("Link copied to clipboard!");
                           }}
