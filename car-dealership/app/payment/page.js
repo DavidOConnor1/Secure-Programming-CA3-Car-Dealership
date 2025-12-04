@@ -14,6 +14,48 @@ export default function PaymentPage() {
   const [errors, setErrors] = useState({});
   const [showStoredCards, setShowStoredCards] = useState(false);
 
+//Input validation
+const validateCard = () => {
+  const newErrors = {};
+
+  //card number validation will use luhn algorithm
+  if(!cardDetails.number.trim())
+  {
+    newErrors.number = "Card number is required";
+  } else if(!isValidCardNumber(cardDetails.number)) {
+    newErrors.number = "invalid card number";
+  }
+
+  //expiry validation
+  if(!cardDetails.expiry.trim()){
+    newErrors.expiry = "Expiry Date is required"
+  } else if(!validateExpiry(cardDetails.expiry)){
+    newErrors.expiry = 'invalid expiry format (MM/YY)'
+  } else if(isExpired(cardDetails.expiry)){
+    newErrors.expiry = "Card has expired"
+  }
+
+  //cvv validation
+  if(!cardDetails.cvv.trim()){
+    newErrors.cvv = "cvv is required"
+  } else if (!/^\d{3,4}$/.test(cardDetails.cvv)) {
+    newErrors.cvv = 'cvv must be 3 or 4 digits';
+  }
+
+  //name validation
+  if(!cardDetails.name.trim()){
+    newErrors.name = "name is required"
+  } else if (cardDetails.name < 2){
+    newErrors.name = 'Name must be 2 characters or more'
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+}
+
+//validation function
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setStoredCards([...storedCards, { ...cardDetails, id: Date.now() }]);
