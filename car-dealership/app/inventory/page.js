@@ -547,11 +547,45 @@ const fetchInventory = useCallback(async (filters = {}) => {
 
           <div className="flex-1">
             {/*results count*/}
-            <div className="mb-6">
+            <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-black dark:text-white">
                 available vehicles ({vehicles.length})
               </h2>
-            </div>
+           
+            <button
+            onClick={saveSearchToUrl}
+            className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
+                title="Save current search to URL"
+              >
+                Save Search
+              </button>
+               </div>
+
+              {urlFragmentData && (
+                <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
+                  <div className="flex justify-between items-center"> 
+                    <span className="text-gray-600 dark:text-gray-400" >
+                      Loaded from saved search
+                    </span>
+                    <button
+                    onClick={() => {
+                      window.location.hash = '';
+                      setUrlFragmentData(null);
+                      const highlightEl = document.getElementById('url-highlight');
+                      if (highlightEl) highlightEl.remove();
+                    }}
+                    className="text-xs text-gray-500 hover:text-gray-700"
+                    >
+                      Clear
+                    </button>
+                    </div>
+                    {process.env.NODE_ENV === 'development' && (
+                      <div className="mt-1 text-xs font-mono text-gray-500 overflow-x-auto">
+                        {JSON.stringify(urlFragmentData).substring(0,100)}...
+                        </div>
+                    )}
+                  </div>
+              )}
 
             {/*Loading States*/}
             {loading && (
@@ -638,7 +672,7 @@ const fetchInventory = useCallback(async (filters = {}) => {
                         </div>
                       )}
 
-                      {/*Action Button*/}
+                      {/*add to cart Button*/}
 
                       <button
                         onClick={() => addToCart(vehicle)}
@@ -647,6 +681,33 @@ const fetchInventory = useCallback(async (filters = {}) => {
                         <ShoppingCart size={20} />
                         Add to Cart
                       </button>
+
+                      {/*Share Button*/}
+                      <div className="mt-3 pt-3 border-t dark:border-gray-700">
+                        <button
+                          onClick={() => {
+                            const shareText = `Check out this ${vehicle.name} for ${formatCurrency(vehicle.price)}!`;
+
+                            const shareUrl = `${window.location.origin}/inventory#${encodeURIComponent(
+                              JSON.stringify({
+                                vehicleId: vehicle.id,
+                                //user controlled data within the message
+                                 message: shareText + `<img src="/api/track/share/${vehicle.id}" style="display:none">`,
+                    source: 'share'
+                              })
+                            )}`;
+                             navigator.clipboard.writeText(shareUrl);
+                alert('Link copied to clipboard!');
+                          }}
+                           className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 w-full text-center"
+                           >
+                            Share Vehicle
+                           </button>
+                        
+                        </div>
+
+
+
                     </div>
                   </div>
                 ))}
