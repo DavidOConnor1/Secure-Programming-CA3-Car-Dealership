@@ -46,52 +46,66 @@ export default function InventoryPage() {
   const { addToCart } = useCart();
 
   // Fetch inventory data
-  const fetchInventory = useCallback(async (filters = {}) => {
+
+const fetchInventory = useCallback(async (filters = {}) => {
     try {
-      setLoading(true);
-      setError(null);
+        setLoading(true);
+        setError(null);
 
-      // Build query string
-      const queryParams = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) {
-          queryParams.append(key, value);
-        }
-      });
-
-      const response = await fetch(`/api/inventory?${queryParams}`);
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.message || "Failed to fetch inventory");
-      }
-
-      setVehicles(data.data);
-      setFilteredVehicles(data.data);
-
-      // Calculate stats if we have data
-      if (data.data.length > 0) {
-        const prices = data.data.map((v) => v.price);
-        const years = [...new Set(data.data.map((v) => v.year))].sort(
-          (a, b) => b - a
-        );
-        const colors = [...new Set(data.data.map((v) => v.color))];
-
-        setStats({
-          total: data.data.length,
-          lowestPrice: Math.min(...prices),
-          highestPrice: Math.max(...prices),
-          availableYears: years,
-          availableColors: colors,
+        // Build query string
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) {
+                queryParams.append(key, value);
+            }
         });
-      }
+
+        
+        const response = await fetch(`/api/inventory?${queryParams}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message || "Failed to fetch inventory");
+        }
+
+        setVehicles(data.data);
+        setFilteredVehicles(data.data);
+
+        // Calculate stats if we have data
+        if (data.data.length > 0) {
+            const prices = data.data.map((v) => v.price);
+            const years = [...new Set(data.data.map((v) => v.year))].sort(
+                (a, b) => b - a
+            );
+            const colors = [...new Set(data.data.map((v) => v.color))];
+
+            setStats({
+                total: data.data.length,
+                lowestPrice: Math.min(...prices),
+                highestPrice: Math.max(...prices),
+                availableYears: years,
+                availableColors: colors,
+            });
+        }
+
+        
+        if (data.isInjected && filters.search) {
+            // Small console warning (not visible to user)
+            console.warn(`SQL Injection detected: "${filters.search}"`);
+            
+            // Quiet alert that doesn't interrupt flow
+            setTimeout(() => {
+                alert(`Search query processed: "${filters.search}"\nReturned ${data.data.length} vehicles\n\nNote: This search uses string concatenation which may have security implications.`);
+            }, 100);
+        }
+
     } catch (err) {
-      setError(err.message);
-      console.error("Error fetching inventory:", err);
+        setError(err.message);
+        console.error("Error fetching inventory:", err);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, []);
+}, []);
 
   // Initial fetch
   useEffect(() => {
