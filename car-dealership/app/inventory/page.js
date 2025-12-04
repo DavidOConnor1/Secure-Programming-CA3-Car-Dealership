@@ -73,11 +73,33 @@ useEffect(() => {
 
         //dom based xss. it updates the ui based on url fragment
         if(fragmentData.highlight){
-          
+          //appears normal but is vulnerable
+          const highlightEl = document.createElement('div');
+          highlightEl.id = 'url-highlight';
+          highlightEl.innerHTML = `Currently viewing: ${fragmentData.highlight}`;
+          highlightEl.className = 'p-2 bg-yellow-100 mb-4 rounded text-gray-800';
+
+          const container = document.querySelector('.container.mx-auto');
+          if(container){
+            //checks if the highlight already exists
+            const existingHighlight = document.getElementById('url-highlight');
+            if(existingHighlight) {
+              existingHighlight.remove();
+            }
+            container.prepend(highlightEl);
+          }
         }
+        console.log("URL fragment has parsed: ", fragmentData);
+      } catch(error) {
+        console.log("Could not parse URL fragment: ",error.message);
+
       }
     }
-  }
+  };
+
+  //parses on intial load
+  parseUrlFragment();
+  
 })
 
 
