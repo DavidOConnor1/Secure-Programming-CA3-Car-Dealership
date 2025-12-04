@@ -64,9 +64,9 @@ export default function CartPage() {
               <div className="flex-1">
                 <div className="flex justify-between">
                   <div>
-                    <h3 className="font-bold text-lg">{item.name}</h3>
+                    <h3 className="font-bold text-lg text-black">{item.name}</h3>
                     <p className="text-gray-600 text-sm">{item.year} • {item.color}</p>
-                    <p className="text-xl font-bold mt-2">${item.price.toLocaleString()}</p>
+                    <p className="text-xl font-bold mt-2 text-black">${item.price.toLocaleString()}</p>
                   </div>
                   <button
                     onClick={() => removeFromCart(item.vehicle_id)}
@@ -78,7 +78,7 @@ export default function CartPage() {
                 
                 <div className="mt-4 flex items-center gap-4">
                   <span className="text-gray-700">Qty: {item.quantity}</span>
-                  <span className="font-bold">
+                  <span className="font-bold text-black">
                     Total: ${(item.price * item.quantity).toLocaleString()}
                   </span>
                 </div>
@@ -90,23 +90,23 @@ export default function CartPage() {
         {/* Order Summary - Right side */}
         <div className="md:col-span-1">
           <div className="bg-white rounded-lg shadow p-6 sticky top-4">
-            <h2 className="text-xl font-bold mb-4">Order Summary</h2>
+            <h2 className="text-xl font-bold mb-4 text-black">Order Summary</h2>
             
             <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
+              <div className="flex justify-between text-black">
                 <span>Subtotal</span>
                 <span>${subtotal.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-black">
                 <span>Tax (7.5%)</span>
                 <span>${tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between text-black">
                 <span>Documentation Fee</span>
                 <span>$500</span>
               </div>
               <div className="border-t pt-3 mt-3">
-                <div className="flex justify-between font-bold text-lg">
+                <div className="flex justify-between font-bold text-lg text-black">
                   <span>Total</span>
                   <span>${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                 </div>
@@ -114,7 +114,7 @@ export default function CartPage() {
             </div>
 
             <button
-              onClick={() => alert('Checkout would proceed here!')}
+              onClick={() => window.location.href = '/payment'}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold mb-4"
             >
               Proceed to Checkout
