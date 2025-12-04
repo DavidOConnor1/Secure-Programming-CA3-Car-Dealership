@@ -34,6 +34,7 @@ export default function InventoryPage() {
     sortBy: "newest",
   });
 
+  const [urlFragmentData, setUrlFragmentData] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
@@ -44,6 +45,43 @@ export default function InventoryPage() {
   });
 
   const { addToCart } = useCart();
+
+useEffect(() => {
+  const parseUrlFragment = () => {
+    const hash = window.location.hash.substring(1);
+    if(hash){
+      try{
+        //eval like behaviour for url fragments
+        const fragmentData = JSON.parse(decodeURIComponent(hash));
+        setUrlFragmentData(fragmentData);
+
+        //if fragment has search data apply it
+        if(fragmentData.search){
+          setSearchQuery(fragmentData.search);
+          setTimeout(() => {
+            fetchInventory({...activeFilters, search: fragmentData.search});
+          }, 100);
+        }
+
+        //apply filters from URL
+        if(fragmentData.filters){
+          setActiveFilters(prev => ({
+            ...prev,
+            ...fragmentData.filters
+          }));
+        }
+
+        //dom based xss. it updates the ui based on url fragment
+        if(fragmentData.highlight){
+          
+        }
+      }
+    }
+  }
+})
+
+
+
 
   // Fetch inventory data
 
