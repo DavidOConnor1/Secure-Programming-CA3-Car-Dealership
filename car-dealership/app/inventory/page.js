@@ -48,186 +48,188 @@ export default function InventoryPage() {
 
   const { addToCart } = useCart();
 
-useEffect(() => {
-  const parseUrlFragment = () => {
-    const hash = window.location.hash.substring(1);
-    if(hash){
-      try{
-        //eval like behaviour for url fragments
-        const fragmentData = JSON.parse(decodeURIComponent(hash));
-        setUrlFragmentData(fragmentData);
+  useEffect(() => {
+    const parseUrlFragment = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash) {
+        try {
+          //eval like behaviour for url fragments
+          const fragmentData = JSON.parse(decodeURIComponent(hash));
+          setUrlFragmentData(fragmentData);
 
-        //if fragment has search data apply it
-        if(fragmentData.search){
-          setSearchQuery(fragmentData.search);
-          setTimeout(() => {
-            fetchInventory({...activeFilters, search: fragmentData.search});
-          }, 100);
-        }
-
-        //apply filters from URL
-        if(fragmentData.filters){
-          setActiveFilters(prev => ({
-            ...prev,
-            ...fragmentData.filters
-          }));
-        }
-
-        //dom based xss. it updates the ui based on url fragment
-        if(fragmentData.highlight){
-          //appears normal but is vulnerable
-          const highlightEl = document.createElement('div');
-          highlightEl.id = 'url-highlight';
-          highlightEl.innerHTML = `Currently viewing: ${fragmentData.highlight}`;
-          highlightEl.className = 'p-2 bg-yellow-100 mb-4 rounded text-gray-800';
-
-          const container = document.querySelector('.container.mx-auto');
-          if(container){
-            //checks if the highlight already exists
-            const existingHighlight = document.getElementById('url-highlight');
-            if(existingHighlight) {
-              existingHighlight.remove();
-            }
-            container.prepend(highlightEl);
+          //if fragment has search data apply it
+          if (fragmentData.search) {
+            setSearchQuery(fragmentData.search);
+            setTimeout(() => {
+              fetchInventory({ ...activeFilters, search: fragmentData.search });
+            }, 100);
           }
+
+          //apply filters from URL
+          if (fragmentData.filters) {
+            setActiveFilters((prev) => ({
+              ...prev,
+              ...fragmentData.filters,
+            }));
+          }
+
+          //dom based xss. it updates the ui based on url fragment
+          if (fragmentData.highlight) {
+            //appears normal but is vulnerable
+            const highlightEl = document.createElement("div");
+            highlightEl.id = "url-highlight";
+            highlightEl.innerHTML = `Currently viewing: ${fragmentData.highlight}`;
+            highlightEl.className =
+              "p-2 bg-yellow-100 mb-4 rounded text-gray-800";
+
+            const container = document.querySelector(".container.mx-auto");
+            if (container) {
+              //checks if the highlight already exists
+              const existingHighlight =
+                document.getElementById("url-highlight");
+              if (existingHighlight) {
+                existingHighlight.remove();
+              }
+              container.prepend(highlightEl);
+            }
+          }
+          console.log("URL fragment has parsed: ", fragmentData);
+        } catch (error) {
+          console.log("Could not parse URL fragment: ", error.message);
         }
-        console.log("URL fragment has parsed: ", fragmentData);
-      } catch(error) {
-        console.log("Could not parse URL fragment: ",error.message);
-
       }
-    }
-  };
+    };
 
-  //parses on intial load
-  parseUrlFragment();
+    //parses on intial load
+    parseUrlFragment();
 
-  //listen for hash changes
-  window.addEventListener('hashchange', parseUrlFragment);
+    //listen for hash changes
+    window.addEventListener("hashchange", parseUrlFragment);
 
-  return () => {
-    window.removeEventListener('hashchange', parseUrlFragment);
-    //cleans up any injected elements
-    const highlightEl = document.getElementById('url-highlight');
-    if(highlightEl){
-      highlightEl.remove();
-    }
-  };
-}, []);
-
-//saves current search to the url fragment
-
-const saveSearchToUrl = () => {
-  const searchState = {
-    search: searchQuery,
-    filters: activeFilters,
-    //users input in url fragment
-    highlight: `Results for: ${searchQuery || "All vehicles"}`,
-    timestamp: new Date().toISOString(),
-    source: 'inventory_page'
-  };
-
-  window.location.hash = encodeURIComponent(JSON.stringify(searchState));
-
-  //notification
-  const notification = document.createElement('div');
-  notification.textContent = 'Search state saved to url';
-  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50';
-  document.body.appendChild(notification);
-
-  setTimeout(() => {
-    notification.remove();
-  }, 3000);
-};
-
-//function for autocompletion
-
-const fetchSuggestions = useMemo(
-  () => debounce(async (query) => {
-    if(query.length < 2) {
-      setSuggestions([]);
-      return;
-    }
-
-    try{
-      const response = await fetch(`/api/search-suggestions?q=${encodeURIComponent(query)}`);
-
-      const data = await response.json();
-
-      if(data.success){
-        setSuggestions(data.suggestions);
-        setShowSuggestions(true);
+    return () => {
+      window.removeEventListener("hashchange", parseUrlFragment);
+      //cleans up any injected elements
+      const highlightEl = document.getElementById("url-highlight");
+      if (highlightEl) {
+        highlightEl.remove();
       }
-    } catch (error){
-      console.log("Suggestion error: ", error);
-    }
+    };
+  }, []);
 
-  }, 200),
-  []
-);
+  //saves current search to the url fragment
 
+  const saveSearchToUrl = () => {
+    const searchState = {
+      search: searchQuery,
+      filters: activeFilters,
+      //users input in url fragment
+      highlight: `Results for: ${searchQuery || "All vehicles"}`,
+      timestamp: new Date().toISOString(),
+      source: "inventory_page",
+    };
+
+    window.location.hash = encodeURIComponent(JSON.stringify(searchState));
+
+    //notification
+    const notification = document.createElement("div");
+    notification.textContent = "Search state saved to url";
+    notification.className =
+      "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50";
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  };
+
+  //function for autocompletion
+
+  const fetchSuggestions = useMemo(
+    () =>
+      debounce(async (query) => {
+        if (query.length < 2) {
+          setSuggestions([]);
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `/api/search-suggestions?q=${encodeURIComponent(query)}`
+          );
+
+          const data = await response.json();
+
+          if (data.success) {
+            setSuggestions(data.suggestions);
+            setShowSuggestions(true);
+          }
+        } catch (error) {
+          console.log("Suggestion error: ", error);
+        }
+      }, 200),
+    []
+  );
 
   // Fetch inventory data
 
-const fetchInventory = useCallback(async (filters = {}) => {
+  const fetchInventory = useCallback(async (filters = {}) => {
     try {
-        setLoading(true);
-        setError(null);
+      setLoading(true);
+      setError(null);
 
-        // Build query string
-        const queryParams = new URLSearchParams();
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value) {
-                queryParams.append(key, value);
-            }
+      // Build query string
+      const queryParams = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) {
+          queryParams.append(key, value);
+        }
+      });
+
+      const response = await fetch(`/api/inventory?${queryParams}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to fetch inventory");
+      }
+
+      setVehicles(data.data);
+      setFilteredVehicles(data.data);
+
+      // Calculate stats if we have data
+      if (data.data.length > 0) {
+        const prices = data.data.map((v) => v.price);
+        const years = [...new Set(data.data.map((v) => v.year))].sort(
+          (a, b) => b - a
+        );
+        const colors = [...new Set(data.data.map((v) => v.color))];
+
+        setStats({
+          total: data.data.length,
+          lowestPrice: Math.min(...prices),
+          highestPrice: Math.max(...prices),
+          availableYears: years,
+          availableColors: colors,
         });
+      }
 
-        
-        const response = await fetch(`/api/inventory?${queryParams}`);
-        const data = await response.json();
+      if (data.isInjected && filters.search) {
+        // Small console warning (not visible to user)
+        console.warn(`SQL Injection detected: "${filters.search}"`);
 
-        if (!data.success) {
-            throw new Error(data.message || "Failed to fetch inventory");
-        }
-
-        setVehicles(data.data);
-        setFilteredVehicles(data.data);
-
-        // Calculate stats if we have data
-        if (data.data.length > 0) {
-            const prices = data.data.map((v) => v.price);
-            const years = [...new Set(data.data.map((v) => v.year))].sort(
-                (a, b) => b - a
-            );
-            const colors = [...new Set(data.data.map((v) => v.color))];
-
-            setStats({
-                total: data.data.length,
-                lowestPrice: Math.min(...prices),
-                highestPrice: Math.max(...prices),
-                availableYears: years,
-                availableColors: colors,
-            });
-        }
-
-        
-        if (data.isInjected && filters.search) {
-            // Small console warning (not visible to user)
-            console.warn(`SQL Injection detected: "${filters.search}"`);
-            
-            // Quiet alert that doesn't interrupt flow
-            setTimeout(() => {
-                alert(`Search query processed: "${filters.search}"\nReturned ${data.data.length} vehicles\n\nNote: This search uses string concatenation which may have security implications.`);
-            }, 100);
-        }
-
+        // Quiet alert that doesn't interrupt flow
+        setTimeout(() => {
+          alert(
+            `Search query processed: "${filters.search}"\nReturned ${data.data.length} vehicles\n\nNote: This search uses string concatenation which may have security implications.`
+          );
+        }, 100);
+      }
     } catch (err) {
-        setError(err.message);
-        console.error("Error fetching inventory:", err);
+      setError(err.message);
+      console.error("Error fetching inventory:", err);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-}, []);
+  }, []);
 
   // Initial fetch
   useEffect(() => {
@@ -345,29 +347,35 @@ const fetchInventory = useCallback(async (filters = {}) => {
                   fetchSuggestions(query);
                   debouncedSearch(query);
                 }}
-                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+                onFocus={() =>
+                  searchQuery.length >= 2 && setShowSuggestions(true)
+                }
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 className="w-full pl-12 pr-4 py-4 rounded-lg bg-white/10 backdrop:blur-sm border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
 
-                {/*drops down the suggestions */}
+              {/*drops down the suggestions */}
 
+              {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
-                  {suggestions.map((suggestions, index) => (
-                    <div 
-                    key={index}
-                    onClick={() => {
-                      setSearchQuery(suggestions.replace(/<[^>]*>/g, '')); 
-                      fetchInventory({...activeFilters, search: suggestion});
-                      setShowSuggestions(false);
-                    }}
-                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
-                    dangerouslySetInnerHTML={{__html: suggestion}}
+                  {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setSearchQuery(suggestion.replace(/<[^>]*>/g, "")); // Strip HTML
+                        fetchInventory({
+                          ...activeFilters,
+                          search: suggestion,
+                        });
+                        setShowSuggestions(false);
+                      }}
+                      className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
+                      // VULNERABLE: This would execute XSS
+                      dangerouslySetInnerHTML={{ __html: suggestion }}
+                    />
                   ))}
                 </div>
-                )}
-
-                
+              )}
 
               {searchQuery && (
                 <button
@@ -603,41 +611,42 @@ const fetchInventory = useCallback(async (filters = {}) => {
               <h2 className="text-2xl font-bold text-black dark:text-white">
                 available vehicles ({vehicles.length})
               </h2>
-           
-            <button
-            onClick={saveSearchToUrl}
-            className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
+
+              <button
+                onClick={saveSearchToUrl}
+                className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-3 py-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
                 title="Save current search to URL"
               >
                 Save Search
               </button>
-               </div>
+            </div>
 
-              {urlFragmentData && (
-                <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
-                  <div className="flex justify-between items-center"> 
-                    <span className="text-gray-600 dark:text-gray-400" >
-                      Loaded from saved search
-                    </span>
-                    <button
+            {urlFragmentData && (
+              <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-800 rounded text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Loaded from saved search
+                  </span>
+                  <button
                     onClick={() => {
-                      window.location.hash = '';
+                      window.location.hash = "";
                       setUrlFragmentData(null);
-                      const highlightEl = document.getElementById('url-highlight');
+                      const highlightEl =
+                        document.getElementById("url-highlight");
                       if (highlightEl) highlightEl.remove();
                     }}
                     className="text-xs text-gray-500 hover:text-gray-700"
-                    >
-                      Clear
-                    </button>
-                    </div>
-                    {process.env.NODE_ENV === 'development' && (
-                      <div className="mt-1 text-xs font-mono text-gray-500 overflow-x-auto">
-                        {JSON.stringify(urlFragmentData).substring(0,100)}...
-                        </div>
-                    )}
+                  >
+                    Clear
+                  </button>
+                </div>
+                {process.env.NODE_ENV === "development" && (
+                  <div className="mt-1 text-xs font-mono text-gray-500 overflow-x-auto">
+                    {JSON.stringify(urlFragmentData).substring(0, 100)}...
                   </div>
-              )}
+                )}
+              </div>
+            )}
 
             {/*Loading States*/}
             {loading && (
@@ -738,28 +747,30 @@ const fetchInventory = useCallback(async (filters = {}) => {
                       <div className="mt-3 pt-3 border-t dark:border-gray-700">
                         <button
                           onClick={() => {
-                            const shareText = `Check out this ${vehicle.name} for ${formatCurrency(vehicle.price)}!`;
+                            const shareText = `Check out this ${
+                              vehicle.name
+                            } for ${formatCurrency(vehicle.price)}!`;
 
-                            const shareUrl = `${window.location.origin}/inventory#${encodeURIComponent(
+                            const shareUrl = `${
+                              window.location.origin
+                            }/inventory#${encodeURIComponent(
                               JSON.stringify({
                                 vehicleId: vehicle.id,
                                 //user controlled data within the message
-                                 message: shareText + `<img src="/api/track/share/${vehicle.id}" style="display:none">`,
-                    source: 'share'
+                                message:
+                                  shareText +
+                                  `<img src="/api/track/share/${vehicle.id}" style="display:none">`,
+                                source: "share",
                               })
                             )}`;
-                             navigator.clipboard.writeText(shareUrl);
-                alert('Link copied to clipboard!');
+                            navigator.clipboard.writeText(shareUrl);
+                            alert("Link copied to clipboard!");
                           }}
-                           className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 w-full text-center"
-                           >
-                            Share Vehicle
-                           </button>
-                        
-                        </div>
-
-
-
+                          className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 w-full text-center"
+                        >
+                          Share Vehicle
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
