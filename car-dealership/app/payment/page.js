@@ -54,13 +54,98 @@ const validateCard = () => {
 }
 
 //validation function
+const isValidCardNumber = (number) => {
+  const cleanNumber = number.replace(/\s/g, '');
+  if(!/^\d{13,19}$/.test(cleanNumber)) return false;
 
+  //luhn algorithm
+  let sum =0;
+  let isEven = false;
+
+  for(let i = cleanNumber.length - 1; i>=0; i--){
+    let digit = parseInt(cleanNumber.charAt(i), 10);
+
+    if(isEven){
+      digit *=2;
+      if(digit > 9)digit -=9;
+    }
+
+    sum += digit;
+    isEven = !isEven;
+  }
+  return sum % 10 === 0;
+}
+
+//is the formating of the expiry right
+const isValidExpiry = (expiry) => {
+  
+  if(!/^\d{2}\/d{2}$/.test(expiry)) return false;
+
+  const [month, year] = expiry.split('/').map(num => parseInt(num, 10));
+  return month >= 1 && month <=12 && year >= 0 && year <=99;
+};
+
+//establishes ifthe card is expired 
+const isExpired = (expiry) => {
+  const [month, year] = expiry.split('/').map(num => parseInt(num, 10));
+  const now = new Date();
+  const currentYear = now.getFullYear()%100;
+  const currentMonth = now.getMonth() + 1;
+
+  if(year < currentYear) return true;
+  if(year === currentYear && month < currentMonth) return true;
+  return false;
+}
+
+//formats the card number
+const formatCardNumber = (value) => {
+  const v = value.replace(/\s+/g, '').replace(/[0-9]/gi, '');
+  const matches = v.match(/\d{4,16}/g);
+  const match = (matches && matches[0] || '');
+  const parts = [];
+
+  for(let i=0, len = match.length; i < len; i += 4){
+    parts.push(match.substring(i,i+4));
+  }
+
+  if(parts.length){
+    return parts.join(' ');
+  } else {
+    return value;
+  }
+};
+
+//format expiry
+const formatExpiry = (value) => {
+  const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+  if(v.length >= 2) {
+    return v.substring(0,2) + (v.length > 2 ? '/' + v.substring(2,4) : '');
+  }
+  return v;
+};
+
+//mask card number, shows only last four digits
+const maskCardNumber = (number) => {
+  const cleanNumber = number.replace(/\s/g, '');
+  const lastFour = cleanNumber.slice(-4);
+  return `**** **** **** ${lastFour}`;
+};
+
+//encryption
+const encryptCardData = (card) => {
+  return {
+    ...card,
+    number: btoa(card.number), //base 64 encoding
+    cvv: null, //won't store cvv
+    maskedNumber: maskCardNumber(card.number),
+    lastFour: card.number.replace(/\s/g, '').slice(-4),
+    encryptedAt: new Date().toISOString()
+  };
+};
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStoredCards([...storedCards, { ...cardDetails, id: Date.now() }]);
-    setCardDetails({ number: "", expiry: "", cvv: "", name: "" });
-    alert("Card Stored (In Plain Text!)");
+    
   };
 
   return (
