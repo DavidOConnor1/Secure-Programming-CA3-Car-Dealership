@@ -8,13 +8,29 @@ export default function vehicleFeatures({features, vehicleId}) {
 
     useEffect(() => {
         //simulates loading user-submitted features
+        //removed all the mock data
         const mockUserFeatures = [
-            `Heated Seats <img src="/api/track?feature=heated -seats&vid=${vehicleId}" style="display:none">`,
-            `Apple CarPlay® <span onmouseover="console.log('hovered on carplay for vehicle ${vehicleId}')">✓</span>`,
-            `Blind spot monitor <script>if(window.performance){console.log('Page loaded in '+performance.now()+'ms')}</script>`
+            `Heated Seats`,
+            `Apple CarPlay®`,
+            `Blind spot monitor`
         ];
         setUserFeatures(mockUserFeatures);
     }, [vehicleId]);
+
+    // santize text 
+    const santizeText = (text) => {
+        if(!text) return '';
+        return text
+        .replace(/[<>]/g, '') //removes < >
+        .replace(/javascript:/gi, '')//removes javascript
+        .replace(/on\w+=/gi, '')//removes event handlers
+        .trim();
+    };
+
+    //escapes html
+    const escapeHTML = (text) => {
+        
+    }
 
     return (
         <div className="space-y-2">
