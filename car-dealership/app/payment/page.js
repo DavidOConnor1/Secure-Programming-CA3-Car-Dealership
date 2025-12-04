@@ -11,6 +11,8 @@ export default function PaymentPage() {
   });
 
   const [storedCards, setStoredCards] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [showStoredCards, setShowStoredCards] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
