@@ -17,7 +17,7 @@ import {
   Fuel,
   Settings,
 } from "lucide-react";
-import { debounce } from "lodash";
+import { debounce, filter } from "lodash";
 
 export default function InventoryPage() {
   const [vehicles, setVehicles] = useState([]);
@@ -99,8 +99,44 @@ useEffect(() => {
 
   //parses on intial load
   parseUrlFragment();
-  
-})
+
+  //listen for hash changes
+  window.addEventListener('hashchange', parseUrlFragment);
+
+  return () => {
+    window.removeEventListener('hashchange', parseUrlFragment);
+    //cleans up any injected elements
+    const highlightEl = document.getElementById('url-highlight');
+    if(highlightEl){
+      highlightEl.remove();
+    }
+  };
+}, []);
+
+//saves current search to the url fragment
+
+const saveSearchToUrl = () => {
+  const searchState = {
+    search: searchQuery,
+    filters: activeFilters,
+    //users input in url fragment
+    highlight: `Results for: ${searchQuery || "All vehicles"}`,
+    timestamp: new Date().toISOString(),
+    source: 'inventory_page'
+  };
+
+  window.location.hash = encodeURIComponent(JSON.stringify(searchState));
+
+  //notification
+  const notification = document.createElement('div');
+  notification.textContent = 'Search state saved to url';
+  notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50';
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+};
 
 
 
