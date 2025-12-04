@@ -100,6 +100,18 @@ export async function initDatabase() {
   return db;
 }
 
+function sanitizeVehicleData(vehicle){
+  return{
+    ...vehicle,
+    name: (vehicle.name || '').replace(/[<>]/g, ''),
+    description: (vehicle.description || '').replace(/[<>]/g, ''),
+    color:  (vehicle.color || '').replace(/[<>]/g, ''),
+    transmission:  (vehicle.transmission || '').replace(/[<>]/g, ''),
+    fuel_type:  (vehicle.fuel_type || '').replace(/[<>]/g, ''),
+    engine:  (vehicle.engine || '').replace(/[<>]/g, '')
+  };
+}
+
 async function seedDatabase(db) {
   //checks if the vehicle already exists
   const vehicleCount = await db.get("SELECT COUNT(*) as count FROM vehicles");
@@ -221,23 +233,24 @@ async function seedDatabase(db) {
   ];
 
   for (const vehicle of vehicles) {
+    const sanitizeVehicle = sanitizeVehicleData(vehicle);
     const result = await db.run(
       `INSERT INTO vehicles (
         name, year, price, image_url, mileage, color, transmission,
         fuel_type, horsepower, engine, description
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        vehicle.name,
-        vehicle.year,
-        vehicle.price,
-        vehicle.image_url,
-        vehicle.mileage,
-        vehicle.color, 
-        vehicle.transmission,
-        vehicle.fuel_type,
-        vehicle.horsepower,
-        vehicle.engine,
-        vehicle.description,
+        sanitizeVehicle.name,
+        sanitizeVehicle.year,
+        sanitizeVehicle.price,
+        sanitizeVehicle.image_url,
+        sanitizeVehicle.mileage,
+        sanitizeVehicle.color, 
+        sanitizeVehicle.transmission,
+        sanitizeVehicle.fuel_type,
+        sanitizeVehicle.horsepower,
+        sanitizeVehicle.engine,
+        sanitizeVehicle.description,
       ]
     );
 
