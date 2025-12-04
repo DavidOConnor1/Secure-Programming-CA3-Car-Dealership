@@ -25,6 +25,8 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     minPrice: "",
     maxPrice: "",
@@ -138,7 +140,31 @@ const saveSearchToUrl = () => {
   }, 3000);
 };
 
+//function for autocompletion
 
+const fetchSuggestions = useMemo(
+  () => debounce(async (query) => {
+    if(query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    try{
+      const response = await fetch(`/api/search-suggestions?q=${encodeURIComponent(query)}`);
+
+      const data = await response.json();
+
+      if(data.success){
+        setSuggestions(data.suggestions);
+        setShowSuggestions(true);
+      }
+    } catch (error){
+      console.log("Suggestion error: ", error);
+    }
+
+  }, 200),
+  []
+);
 
 
   // Fetch inventory data
@@ -314,9 +340,35 @@ const fetchInventory = useCallback(async (filters = {}) => {
                 type="text"
                 placeholder="Search via model, feature or colour..."
                 value={searchQuery}
-                onChange={handleSearchChange}
+                onChange={(e) => {
+                  setSearchQuery(query);
+                  fetchSuggestions(query);
+                  debouncedSearch(query);
+                }}
+                onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 className="w-full pl-12 pr-4 py-4 rounded-lg bg-white/10 backdrop:blur-sm border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+
+                {/*drops down the suggestions */}
+
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+                  {suggestions.map((suggestions, index) => (
+                    <div 
+                    key={index}
+                    onClick={() => {
+                      setSearchQuery(suggestions.replace(/<[^>]*>/g, '')); 
+                      fetchInventory({...activeFilters, search: suggestion});
+                      setShowSuggestions(false);
+                    }}
+                    className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
+                    dangerouslySetInnerHTML={{__html: suggestion}}
+                  ))}
+                </div>
+                )}
+
+                
+
               {searchQuery && (
                 <button
                   onClick={() => {
