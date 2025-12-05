@@ -1,6 +1,12 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 
 const CartContext = createContext();
 
@@ -10,11 +16,11 @@ export function CartProvider({ children }) {
 
   const fetchCart = useCallback(async () => {
     try {
-      const response = await fetch('/api/cart');
+      const response = await fetch("/api/cart");
       const data = await response.json();
       setCart(data);
     } catch (error) {
-      console.error('Error fetching Cart: ', error);
+      console.error("Error fetching Cart: ", error);
     } finally {
       setLoading(false);
     }
@@ -26,65 +32,67 @@ export function CartProvider({ children }) {
 
   const addToCart = async (vehicle) => {
     try {
-      const response = await fetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vehicleId: vehicle.id, quantity: 1 }),
       });
       const data = await response.json();
       setCart(data);
     } catch (error) {
-      console.error('Error adding to cart: ', error);
+      console.error("Error adding to cart: ", error);
     }
   };
 
   const removeFromCart = async (vehicleId) => {
     try {
       const response = await fetch(`/api/cart?vehicleId=${vehicleId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       const data = await response.json();
       setCart(data);
     } catch (error) {
-      console.error('Error removing from cart: ', error);
+      console.error("Error removing from cart: ", error);
     }
   };
 
   const updateQuantity = async (vehicleId, quantity) => {
     try {
-      const response = await fetch('/api/cart', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vehicleId, quantity }),
       });
       const data = await response.json();
       setCart(data);
     } catch (error) {
-      console.error('Error updating quantity', error);
+      console.error("Error updating quantity", error);
     }
   };
 
   const clearCart = async () => {
     try {
-      await fetch('/api/cart', {
-        method: 'DELETE',
+      await fetch("/api/cart", {
+        method: "DELETE",
       });
       setCart({ items: [], total: 0, count: 0 });
     } catch (error) {
-      console.error('Error clearing cart: ', error);
+      console.error("Error clearing cart: ", error);
     }
   };
 
   return (
-    <CartContext.Provider value={{
-      cart,
-      loading,
-      addToCart,
-      removeFromCart,
-      updateQuantity,
-      clearCart,
-      refreshCart: fetchCart,
-    }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        loading,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        refreshCart: fetchCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
@@ -93,7 +101,7 @@ export function CartProvider({ children }) {
 export const useCart = () => {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within CartProvider');
+    throw new Error("useCart must be used within CartProvider");
   }
   return context;
 };

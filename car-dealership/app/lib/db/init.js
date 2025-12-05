@@ -15,7 +15,7 @@ export async function initDatabase() {
   //enable forgein keys
   await db.run("PRAGMA foreign_keys = ON");
 
-  //create tables 
+  //create tables
   await db.exec(`
     CREATE TABLE IF NOT EXISTS vehicles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,15 +100,15 @@ export async function initDatabase() {
   return db;
 }
 
-function sanitizeVehicleData(vehicle){
-  return{
+function sanitizeVehicleData(vehicle) {
+  return {
     ...vehicle,
-    name: (vehicle.name || '').replace(/[<>]/g, ''),
-    description: (vehicle.description || '').replace(/[<>]/g, ''),
-    color:  (vehicle.color || '').replace(/[<>]/g, ''),
-    transmission:  (vehicle.transmission || '').replace(/[<>]/g, ''),
-    fuel_type:  (vehicle.fuel_type || '').replace(/[<>]/g, ''),
-    engine:  (vehicle.engine || '').replace(/[<>]/g, '')
+    name: (vehicle.name || "").replace(/[<>]/g, ""),
+    description: (vehicle.description || "").replace(/[<>]/g, ""),
+    color: (vehicle.color || "").replace(/[<>]/g, ""),
+    transmission: (vehicle.transmission || "").replace(/[<>]/g, ""),
+    fuel_type: (vehicle.fuel_type || "").replace(/[<>]/g, ""),
+    engine: (vehicle.engine || "").replace(/[<>]/g, ""),
   };
 }
 
@@ -155,20 +155,23 @@ async function seedDatabase(db) {
       name: "2025 Honda Civic Type R",
       year: 2025,
       price: 87000,
-      image_url: "https://www.autoblog.com/.image/w_3840,q_auto:good,c_limit/MjA5MDg4OTM3NDAxMTMyNjU2/2023-honda-civic-type-r.jpg",
+      image_url:
+        "https://www.autoblog.com/.image/w_3840,q_auto:good,c_limit/MjA5MDg4OTM3NDAxMTMyNjU2/2023-honda-civic-type-r.jpg",
       mileage: 10,
       color: "championship white",
       transmission: "6-Speed Manual",
       horsepower: 306,
       fuel_type: "petrol",
       engine: "2.0L VTEC TURBO",
-      description: "Track ready performance and an engine that gives satifying speeds and reliability",
+      description:
+        "Track ready performance and an engine that gives satifying speeds and reliability",
     },
     {
       name: "2025 Mazda MX-5 Miata",
       year: 2025,
       price: 36900,
-      image_url: "https://hips.hearstapps.com/hmg-prod/images/2025-mazda-mx-5-miata-35th-anniversary-pr-114-6792b9db0b3ec.jpg?crop=0.707xw:0.596xh;0.168xw,0.334xh&resize=2048:*",
+      image_url:
+        "https://hips.hearstapps.com/hmg-prod/images/2025-mazda-mx-5-miata-35th-anniversary-pr-114-6792b9db0b3ec.jpg?crop=0.707xw:0.596xh;0.168xw,0.334xh&resize=2048:*",
       mileage: 150,
       color: "Soul Red Crystal",
       transmission: "6-Speed Manual",
@@ -181,7 +184,8 @@ async function seedDatabase(db) {
       name: "Toyota GR86",
       year: 2024,
       price: 32000,
-      image_url: "https://c0.carzone.ie/Jato/Images/Photolib/Irl/TOYOTA/GR86/2023/2CO.JPG",
+      image_url:
+        "https://c0.carzone.ie/Jato/Images/Photolib/Irl/TOYOTA/GR86/2023/2CO.JPG",
       mileage: 3000,
       color: "Trueno Blue",
       transmission: "6-Speed Manual",
@@ -194,42 +198,48 @@ async function seedDatabase(db) {
       name: "Toyota AE86 Trueno",
       year: 2026,
       price: 40000,
-      image_url: "https://cdn.motor1.com/images/mgl/13P3q/s1/modern-day-toyota-ae86-rendering-front.webp",
+      image_url:
+        "https://cdn.motor1.com/images/mgl/13P3q/s1/modern-day-toyota-ae86-rendering-front.webp",
       mileage: 0,
       color: "Black & White", // ADDED THIS MISSING FIELD
       transmission: "5-Speed Manual",
       horsepower: 130,
       fuel_type: "Electric",
       engine: "4A-GE",
-      description: "Iconic Initial D drift legend. Classic Japanese sports coupe."
+      description:
+        "Iconic Initial D drift legend. Classic Japanese sports coupe.",
     },
     //Stored XSS
     {
-        name: "2024 Toyota Camry",
-        year: 2024,
-        price: 28000,
-        image_url: "https://carwow-uk-wp-3.imgix.net/Toyota-Camry-Hybrid-Exterior-Dynamic-NOT-UK-SPEC-19.jpg",
-        mileage: 0,
-        color: "Midnight Black",
-        transmission: "Automatic",
-        horsepower: 203,
-        fuel_type: "Hybrid",
-        engine: "2.5L 4-cylinder",
-        description: "Excellent fuel economy. Features include: <a href='javascript:console.log(`user clicked link`)'>Premium Audio</a> and <img src='/api/track?item=camry' style='display:none'>",
+      name: "2024 Toyota Camry",
+      year: 2024,
+      price: 28000,
+      image_url:
+        "https://carwow-uk-wp-3.imgix.net/Toyota-Camry-Hybrid-Exterior-Dynamic-NOT-UK-SPEC-19.jpg",
+      mileage: 0,
+      color: "Midnight Black",
+      transmission: "Automatic",
+      horsepower: 203,
+      fuel_type: "Hybrid",
+      engine: "2.5L 4-cylinder",
+      description:
+        "Excellent fuel economy. Features include: <a href='javascript:console.log(`user clicked link`)'>Premium Audio</a> and <img src='/api/track?item=camry' style='display:none'>",
     },
     {
-        name: "Honda Civic LX",
-        year: 2023,
-        price: 23500,
-        image_url: "https://di-uploads-pod10.dealerinspire.com/hondaworlddowney/uploads/2018/03/2017-honda-civic-lx-front-side.jpg",
-        mileage: 15000,
-        color: "Crystal Red",
-        transmission: "CVT",
-        horsepower: 158,
-        fuel_type: "Petrol",
-        engine: "2.0L",
-        description: "Great daily driver. <iframe src='data:text/html,<script>parent.postMessage(`iframe loaded`,\"*\")</script>' style='width:0;height:0;border:0'></iframe>",
-    }
+      name: "Honda Civic LX",
+      year: 2023,
+      price: 23500,
+      image_url:
+        "https://di-uploads-pod10.dealerinspire.com/hondaworlddowney/uploads/2018/03/2017-honda-civic-lx-front-side.jpg",
+      mileage: 15000,
+      color: "Crystal Red",
+      transmission: "CVT",
+      horsepower: 158,
+      fuel_type: "Petrol",
+      engine: "2.0L",
+      description:
+        "Great daily driver. <iframe src='data:text/html,<script>parent.postMessage(`iframe loaded`,\"*\")</script>' style='width:0;height:0;border:0'></iframe>",
+    },
   ];
 
   for (const vehicle of vehicles) {
@@ -245,7 +255,7 @@ async function seedDatabase(db) {
         sanitizeVehicle.price,
         sanitizeVehicle.image_url,
         sanitizeVehicle.mileage,
-        sanitizeVehicle.color, 
+        sanitizeVehicle.color,
         sanitizeVehicle.transmission,
         sanitizeVehicle.fuel_type,
         sanitizeVehicle.horsepower,
@@ -257,7 +267,12 @@ async function seedDatabase(db) {
     //adding features to vehicles
     const vehicleId = result.lastID;
     const featureNames = vehicle.name.includes("Type R")
-      ? ["VTEC Turbo", "Manual Transmission", "Turbocharged", "Navigation System"]
+      ? [
+          "VTEC Turbo",
+          "Manual Transmission",
+          "Turbocharged",
+          "Navigation System",
+        ]
       : vehicle.name.includes("MX-5")
       ? ["Convertible", "Manual Transmission", "Keyless Entry", "Apple CarPlay"]
       : vehicle.name.includes("GR86")

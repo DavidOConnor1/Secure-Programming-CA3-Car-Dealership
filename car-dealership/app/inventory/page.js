@@ -357,27 +357,33 @@ export default function InventoryPage() {
 
               {/*drops down the suggestions */}
 
-             {showSuggestions && suggestions.length > 0 && (
-  <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
-    {suggestions.map((suggestion, index) => {
-      // Extract clean text from the HTML suggestion
-      const cleanText = suggestion.replace(/<[^>]*>/g, '') .trim();
-      
-      return (
-        <div
-          key={index}
-          onClick={() => {
-            // Set the CLEAN text, not the HTML
-            setSearchQuery(cleanText);
-            fetchInventory({ ...activeFilters, search: cleanText });
-            setShowSuggestions(false);
-          }}
-          className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
-           > {suggestion} </div>
-      );
-    })}
-  </div>
-)}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-xl z-50 max-h-60 overflow-y-auto">
+                  {suggestions.map((suggestion, index) => {
+                    // Extract clean text from the HTML suggestion
+                    const cleanText = suggestion.replace(/<[^>]*>/g, "").trim();
+
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          // Set the CLEAN text, not the HTML
+                          setSearchQuery(cleanText);
+                          fetchInventory({
+                            ...activeFilters,
+                            search: cleanText,
+                          });
+                          setShowSuggestions(false);
+                        }}
+                        className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-b-0"
+                      >
+                        {" "}
+                        {suggestion}{" "}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
 
               {searchQuery && (
                 <button
@@ -752,7 +758,10 @@ export default function InventoryPage() {
                             const shareText = `Check out this ${
                               vehicle.name
                             } for ${formatCurrency(vehicle.price)}!`;
-                              const cleanShareText = shareText.replace(/<>/g, ''); {/*strips the <> preventing malicious code*/}
+                            const cleanShareText = shareText.replace(/<>/g, "");
+                            {
+                              /*strips the <> preventing malicious code*/
+                            }
                             const shareUrl = `${
                               window.location.origin
                             }/inventory#${encodeURIComponent(
@@ -760,8 +769,7 @@ export default function InventoryPage() {
                                 vehicleId: vehicle.id,
                                 //user controlled data within the message
                                 message: cleanShareText, //prevents html
-                                  source: 'share'
-                          
+                                source: "share",
                               })
                             )}`;
 

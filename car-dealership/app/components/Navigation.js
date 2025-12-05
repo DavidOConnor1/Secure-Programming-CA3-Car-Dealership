@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Car, ShoppingCart, Home } from 'lucide-react';
-import { useCart } from '../context/CartContext';
-import Link from 'next/link';
+import { Car, ShoppingCart, Home } from "lucide-react";
+import { useCart } from "../context/CartContext";
+import Link from "next/link";
 
 export default function Navigation() {
   const { cart } = useCart();
-  
+
   return (
     <nav className="sticky top-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-sm border-b">
       <div className="container mx-auto px-6 py-4">
@@ -18,15 +18,18 @@ export default function Navigation() {
               CarGuy Mechanics
             </span>
           </Link>
-          
+
           {/*  Navigation icons */}
           <div className="flex items-center gap-6">
             {/* Home link (optional) */}
-            <Link href="/" className="text-black dark:text-white hover:text-blue-600 transition hidden md:flex items-center gap-2">
+            <Link
+              href="/"
+              className="text-black dark:text-white hover:text-blue-600 transition hidden md:flex items-center gap-2"
+            >
               <Home size={20} />
               <span>Home</span>
             </Link>
-            
+
             {/* Cart with badge */}
             <Link href="/cart" className="relative">
               <ShoppingCart className="text-black dark:text-white" size={24} />
@@ -36,10 +39,10 @@ export default function Navigation() {
                 </span>
               )}
             </Link>
-            
+
             {/* Browse Cars button */}
-            <Link 
-              href="/inventory" 
+            <Link
+              href="/inventory"
               className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
             >
               Browse Cars
