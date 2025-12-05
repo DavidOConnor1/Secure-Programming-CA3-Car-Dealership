@@ -108,6 +108,7 @@ export default function Home() {
             </p>
           </div>
 
+          {/* start display only section*/}
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center p-8 bg-zinc-50 dark:bg-gray-900 rounded-xl">
               <div className="bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -173,7 +174,7 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {whyUs.map((item, index) => (
+            {whyUs.map((item, index) => ( //loops through items to be rendered
               <div
                 key={index}
                 className="bg-white dark:bg-black p-8 rounded-xl shadow-lg"
@@ -219,6 +220,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+{/*end of display only section*/}
 
       {/* Featured Vehicles Section */}
       <section className="py-20 bg-white dark:bg-black">
