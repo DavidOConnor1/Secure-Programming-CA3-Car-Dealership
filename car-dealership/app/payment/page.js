@@ -182,7 +182,7 @@ export default function PaymentPage() {
               type="text"
               value={cardDetails.number}
               onChange={(e) =>
-                setCardDetails({ ...cardDetails, number: formatCardNumber(e.target.value) })
+                setCardDetails({ ...cardDetails, number: formatCardNumber(e.target.value.replace(/\D/g, '')) })
               }
               placeholder="4111 1243 5678 9000"
               className={`w-full border p-2 rounded text-gray-500 font-semibold ${errors.number ? 'border-red-500' : 'border-gray-300'}`} 
@@ -217,7 +217,7 @@ export default function PaymentPage() {
                 type="password"
                 value={cardDetails.cvv}
                 onChange={(e) =>
-                  setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/[^0-9]/g, '') })
+                  setCardDetails({ ...cardDetails, cvv: e.target.value.replace(/[^0-9]/g, '').slice(0,3) })
                 }
                 placeholder="124"
                 className={`w-full border p-2 rounded text-gray-500 font-semibold ${
@@ -285,6 +285,13 @@ export default function PaymentPage() {
                             <p className="text-gray-700 mt-1">
                             <span className="font-semibold">Number: </span> {card.maskedNumber}
                             </p>
+                            <p className="text-gray-700">
+                              <span className="font-semibold">Name:</span> {card.name}
+                            </p>
+                            <p className="text-gray-700">
+                              <span className="font-semibold">CVV: </span>
+                              <span className="text-red-600 ml-1">Not Stored</span>
+                            </p>
                             </div>
                         </div>
                         </div>
@@ -292,6 +299,14 @@ export default function PaymentPage() {
                   </div>
                 )}
                 </div>
+            )}
+
+            {!showStoredCards && storedCards.length > 0 && (
+              <div className="text-center py-4"> 
+                <p className="text-gray-600">
+                  {storedCards.length} Card(s) stored. click button to view
+                </p>
+              </div>
             )}
 
       </div>
