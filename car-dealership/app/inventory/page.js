@@ -47,6 +47,7 @@ export default function InventoryPage() {
   });
 
   const { addToCart } = useCart();
+  const [urlHighlight, setURLHighlight] = useState('');
 
   useEffect(() => {
     const parseUrlFragment = () => {
@@ -75,23 +76,7 @@ export default function InventoryPage() {
 
           //dom based xss. has been updated to display as text and not html to prevent the xss
           if (fragmentData.highlight) {
-            //appears normal but is vulnerable
-            const highlightEl = document.createElement("div");
-            highlightEl.id = "url-highlight";
-            highlightEl.textContent = `Currently viewing: ${fragmentData.highlight}`;
-            highlightEl.className =
-              "p-2 bg-yellow-100 mb-4 rounded text-gray-800";
-
-            const container = document.querySelector(".container.mx-auto");
-            if (container) {
-              //checks if the highlight already exists
-              const existingHighlight =
-                document.getElementById("url-highlight");
-              if (existingHighlight) {
-                existingHighlight.remove();
-              }
-              container.prepend(highlightEl);
-            }
+            setURLHighlight(fragmentData.highlight);
           }
           console.log("URL fragment has parsed: ", fragmentData);
         } catch (error) {
@@ -108,11 +93,8 @@ export default function InventoryPage() {
 
     return () => {
       window.removeEventListener("hashchange", parseUrlFragment);
-      //cleans up any injected elements
-      const highlightEl = document.getElementById("url-highlight");
-      if (highlightEl) {
-        highlightEl.remove();
-      }
+     
+      
     };
   }, []);
 
@@ -172,64 +154,76 @@ export default function InventoryPage() {
 
   // Fetch inventory data
 
-  const fetchInventory = useCallback(async (filters = {}) => {
+  // In your InventoryPage component
+const fetchInventory = useCallback(async (filters = {}) => {
     try {
-      setLoading(true);
-      setError(null);
+        setLoading(true);
+        setError(null);
+        
+        console.log("Fetching inventory with filters:", filters);
 
-      // Build query string
-      const queryParams = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) {
-          queryParams.append(key, value);
-        }
-      });
-
-      const response = await fetch(`/api/inventory?${queryParams}`);
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.message || "Failed to fetch inventory");
-      }
-
-      setVehicles(data.data);
-      setFilteredVehicles(data.data);
-
-      // Calculate stats if we have data
-      if (data.data.length > 0) {
-        const prices = data.data.map((v) => v.price);
-        const years = [...new Set(data.data.map((v) => v.year))].sort(
-          (a, b) => b - a
-        );
-        const colors = [...new Set(data.data.map((v) => v.color))];
-
-        setStats({
-          total: data.data.length,
-          lowestPrice: Math.min(...prices),
-          highestPrice: Math.max(...prices),
-          availableYears: years,
-          availableColors: colors,
+        // Build query string
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) {
+                queryParams.append(key, value);
+            }
         });
-      }
 
-      if (data.isInjected && filters.search) {
-        // Small console warning (not visible to user)
-        console.warn(`SQL Injection detected: "${filters.search}"`);
+        const apiUrl = `/api/inventory?${queryParams}`;
+        console.log(" Calling API:", apiUrl);
 
-        // Quiet alert that doesn't interrupt flow
-        setTimeout(() => {
-          alert(
-            `Search query processed: "${filters.search}"\nReturned ${data.data.length} vehicles\n\nNote: This search uses string concatenation which may have security implications.`
-          );
-        }, 100);
-      }
+        const response = await fetch(apiUrl);
+        console.log("API Response status:", response.status);
+        
+        const data = await response.json();
+        console.log("API Response data:", data);
+
+        if (!data.success) {
+            console.error("API returned success: false", data);
+            throw new Error(data.message || "Failed to fetch inventory");
+        }
+
+        console.log(`Successfully loaded ${data.data.length} vehicles`);
+        
+        setVehicles(data.data);
+        setFilteredVehicles(data.data);
+
+        // Calculate stats if we have data
+        if (data.data.length > 0) {
+            const prices = data.data.map((v) => v.price);
+            const years = [...new Set(data.data.map((v) => v.year))].sort(
+                (a, b) => b - a
+            );
+            const colors = [...new Set(data.data.map((v) => v.color))];
+
+            setStats({
+                total: data.data.length,
+                lowestPrice: Math.min(...prices),
+                highestPrice: Math.max(...prices),
+                availableYears: years,
+                availableColors: colors,
+            });
+        }
+
+        if (data.isInjected && filters.search) {
+            console.warn(`⚠️ SQL Injection detected: "${filters.search}"`);
+            
+            setTimeout(() => {
+                alert(
+                    `Search query processed: "${filters.search}"\nReturned ${data.data.length} vehicles\n\nNote: This search uses string concatenation which may have security implications.`
+                );
+            }, 100);
+        }
+
     } catch (err) {
-      setError(err.message);
-      console.error("Error fetching inventory:", err);
+        console.error(" Error in fetchInventory:", err);
+        console.error("Full error:", err.message);
+        setError(err.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  }, []);
+}, []);
 
   // Initial fetch
   useEffect(() => {
