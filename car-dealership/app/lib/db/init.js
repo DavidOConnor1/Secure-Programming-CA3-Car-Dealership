@@ -137,7 +137,7 @@ async function seedDatabase(db) {
     await db.run("INSERT OR IGNORE INTO features (name) VALUES(?)", feature);
   }
 
-  //insert vehicles - FIXED: Removed vin and stock_number from INSERT statement
+  //insert vehicles for dumby data
   const vehicles = [
     {
       name: "2025 Honda Civic Type R",
@@ -220,6 +220,7 @@ async function seedDatabase(db) {
     }
   ];
 
+  //inserts all features for the vehicles without checking for scripts
   for (const vehicle of vehicles) {
     const result = await db.run(
       `INSERT INTO vehicles (
