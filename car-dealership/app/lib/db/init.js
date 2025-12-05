@@ -100,6 +100,7 @@ export async function initDatabase() {
   return db;
 }
 
+//santizes data by preventing <> to be placed in
 function sanitizeVehicleData(vehicle) {
   return {
     ...vehicle,
@@ -149,7 +150,7 @@ async function seedDatabase(db) {
     await db.run("INSERT OR IGNORE INTO features (name) VALUES(?)", feature);
   }
 
-  //insert vehicles - FIXED: Removed vin and stock_number from INSERT statement
+  //insert vehicles for dumby data
   const vehicles = [
     {
       name: "2025 Honda Civic Type R",
@@ -242,6 +243,7 @@ async function seedDatabase(db) {
     },
   ];
 
+  //will load of the details of the cards into the database with all santized fields
   for (const vehicle of vehicles) {
     const sanitizeVehicle = sanitizeVehicleData(vehicle);
     const result = await db.run(
@@ -266,7 +268,7 @@ async function seedDatabase(db) {
 
     //adding features to vehicles
     const vehicleId = result.lastID;
-    const featureNames = vehicle.name.includes("Type R")
+    const featureNames = vehicle.name.includes("Type R") //features for honda civic
       ? [
           "VTEC Turbo",
           "Manual Transmission",
@@ -274,9 +276,9 @@ async function seedDatabase(db) {
           "Navigation System",
         ]
       : vehicle.name.includes("MX-5")
-      ? ["Convertible", "Manual Transmission", "Keyless Entry", "Apple CarPlay"]
+      ? ["Convertible", "Manual Transmission", "Keyless Entry", "Apple CarPlay"] //features for mx5
       : vehicle.name.includes("GR86")
-      ? ["RWD", "Manual Transmission", "Keyless Entry", "Backup Camera"]
+      ? ["RWD", "Manual Transmission", "Keyless Entry", "Backup Camera"] //features for gr86
       : ["Classic", "Manual Transmission", "RWD", "Lightweight"]; // Features for AE86
 
     for (const featureName of featureNames) {

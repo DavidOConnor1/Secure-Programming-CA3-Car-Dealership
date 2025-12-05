@@ -182,6 +182,7 @@ export async function getCartWithItems(sessionId) {
 
   if (!cart) return null;
 
+  //collects all details for putting car in the cart
   const items = await db.all(
     `
     SELECT ci.*, 
