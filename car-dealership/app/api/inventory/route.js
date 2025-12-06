@@ -75,7 +75,7 @@ export async function GET(request) {
             if (filters.search.includes("' UNION") || filters.search.includes("customers")) {
                 // Simulate what a UNION attack could expose
                 const customers = await db.all("SELECT name, email, phone FROM customers LIMIT 3");
-                console.log("🚨 POTENTIAL DATA LEAK: Customer data could be exposed via UNION attack");
+                console.log(" POTENTIAL DATA LEAK: Customer data could be exposed via UNION attack");
             }
             
         } else {
